@@ -1,8 +1,8 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Serge Anicet Kouame | L'Art du Regard</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,900;1,400&family=Montserrat:wght@200;400;700&display=swap" rel="stylesheet">
@@ -11,29 +11,35 @@
 
     <style>
         :root {
-            --marron-noir: #0a0706; /* Plus profond */
+            --marron-noir: #0a0706;
             --marron-riche: #2d1e17;
             --bronze: #8d6e63;
             --beige-sable: #f5f0e1;
             --or-mat: #c4a484;
             --blanc-ivoire: #ffffff;
             --accent-ocre: #b35a2d;
-            --royal-gold: #ffd700; /* Nouvelle couleur */
-            --deep-red: #4a0e0e; /* Nouvelle couleur */
+            --royal-gold: #ffd700;
+            --deep-red: #4a0e0e;
             --ombre-douce: rgba(0,0,0,0.6);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
-        body { 
-            background-color: var(--marron-noir); 
-            color: var(--beige-sable); 
-            font-family: 'Montserrat', sans-serif;
-            overflow-x: hidden;
-            line-height: 1.6;
+        /* Correction curseur par défaut pour éviter les bugs mobile */
+        html, body { 
+            width: 100%;
+            overflow-x: hidden; 
+            background-color: var(--marron-noir);
         }
 
-        /* --- EFFET DE TEXTURE PHOTO --- */
+        body { 
+            color: var(--beige-sable); 
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.6;
+            cursor: none; /* Désactivé sur mobile via media query */
+        }
+
+        /* --- TEXTURE --- */
         body::after {
             content: "";
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -41,7 +47,7 @@
             opacity: 0.05; pointer-events: none; z-index: 9999;
         }
 
-        /* --- CURSEUR AMÉLIORÉ --- */
+        /* --- CURSEUR (Caché sur mobile) --- */
         #cursor {
             position: fixed; width: 12px; height: 12px; background: var(--or-mat);
             border-radius: 50%; pointer-events: none; z-index: 10001; mix-blend-mode: difference;
@@ -55,7 +61,8 @@
         #loader {
             position: fixed; inset: 0; background: var(--marron-noir);
             z-index: 10002; display: flex; align-items: center; justify-content: center;
-            font-family: 'Syncopate'; font-size: 1.8vw; letter-spacing: 20px; color: var(--or-mat);
+            font-family: 'Syncopate'; font-size: 2vw; letter-spacing: 15px; color: var(--or-mat);
+            text-align: center;
         }
 
         /* --- HERO SECTION --- */
@@ -79,16 +86,13 @@
             filter: drop-shadow(0 20px 50px rgba(0,0,0,0.8));
         }
 
-        .hero-title span { display: block; font-style: italic; font-weight: 400; font-size: 3.5vw; letter-spacing: 8px; color: var(--or-mat); text-shadow: none; }
+        .hero-title span { display: block; font-style: italic; font-weight: 400; font-size: 3.5vw; letter-spacing: 8px; color: var(--or-mat); }
 
         .floating-img-space {
             position: absolute; width: 300px; height: 400px; background: rgba(255,255,255,0.02);
             border: 1px solid rgba(196, 164, 132, 0.2); overflow: hidden;
-            display: flex; align-items: center; justify-content: center;
             box-shadow: 0 30px 60px var(--ombre-douce);
-            transition: border 0.5s ease;
         }
-        .floating-img-space:hover { border-color: var(--accent-ocre); }
 
         /* --- SECTION NARRATIVE --- */
         .narrative {
@@ -98,109 +102,91 @@
 
         .narrative-content { flex: 1.2; z-index: 2; }
         .narrative-content h2 { font-family: 'Playfair Display'; font-size: 4rem; margin-bottom: 30px; line-height: 1; }
-        .narrative-content p { font-size: 1.2rem; line-height: 2; margin-bottom: 25px; font-weight: 400; }
+        .narrative-content p { font-size: 1.2rem; line-height: 2; margin-bottom: 25px; }
 
         .image-reveal-box {
             flex: 0.8; height: 750px; background: var(--marron-riche); position: relative;
-            overflow: hidden; border-radius: 2px;
-            box-shadow: 30px 30px 0px var(--or-mat);
+            overflow: hidden; box-shadow: 30px 30px 0px var(--or-mat);
         }
 
         /* --- GALERIE HORIZONTALE --- */
+        .horizontal-gallery-wrapper { overflow: hidden; }
         .horizontal-gallery {
             height: 100vh; display: flex; align-items: center; background: #050505;
-            overflow: hidden; width: 400vw;
+            width: 400vw;
         }
-
         .gallery-strip { display: flex; padding: 0 10vw; }
-        
         .gallery-panel {
             width: 75vw; height: 80vh; margin-right: 12vw; background: #111;
             position: relative; overflow: hidden; border: 1px solid rgba(196, 164, 132, 0.1);
-            transition: transform 0.8s cubic-bezier(0.075, 0.82, 0.165, 1);
         }
-
-        .gallery-panel:hover { transform: scale(1.02); border-color: var(--or-mat); }
-
-        .panel-desc { 
-            position: absolute; bottom: 60px; left: 60px; z-index: 5;
-            font-family: 'Syncopate'; mix-blend-mode: exclusion;
-        }
-        
-        .panel-desc h3 { font-size: 3rem; color: var(--or-mat); letter-spacing: -2px; }
+        .panel-desc { position: absolute; bottom: 60px; left: 60px; z-index: 5; font-family: 'Syncopate'; mix-blend-mode: exclusion; }
+        .panel-desc h3 { font-size: 3rem; color: var(--or-mat); }
 
         /* --- EXPERTISE --- */
-        .expertise {
-            padding: 150px 10%; background: var(--blanc-ivoire); color: var(--marron-noir);
-            background-image: radial-gradient(var(--beige-sable) 1px, transparent 1px);
-            background-size: 40px 40px;
-        }
-
-        .grid-expertise {
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px; margin-top: 100px;
-        }
-
-        .exp-card {
-            padding: 80px 50px; border: 1px solid #eee; background: #fff;
-            position: relative; overflow: hidden;
-            transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
-        }
-        
-        .exp-card::before {
-            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 5px;
-            background: var(--accent-ocre); transition: height 0.4s ease; z-index: 0;
-        }
-
-        .exp-card:hover::before { height: 100%; }
-        
-        .exp-card:hover { 
-            color: var(--blanc-ivoire);
-            transform: translateY(-15px) rotateX(10deg);
-            box-shadow: 0 40px 80px rgba(0,0,0,0.2);
-        }
-
-        .exp-card h3 { font-family: 'Playfair Display'; font-size: 2.2rem; margin-bottom: 20px; position: relative; z-index: 1; }
-        .exp-card p { position: relative; z-index: 1; }
+        .expertise { padding: 150px 10%; background: var(--blanc-ivoire); color: var(--marron-noir); }
+        .grid-expertise { display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px; margin-top: 100px; }
+        .exp-card { padding: 80px 50px; border: 1px solid #eee; background: #fff; position: relative; transition: all 0.6s ease; }
+        .exp-card h3 { font-family: 'Playfair Display'; font-size: 2.2rem; margin-bottom: 20px; }
 
         /* --- FOOTER --- */
-        footer {
-            padding: 150px 5%; background: var(--marron-noir); color: var(--or-mat);
-            text-align: center; border-top: 1px solid var(--marron-riche);
-            position: relative;
-        }
+        footer { padding: 150px 5%; background: var(--marron-noir); color: var(--or-mat); text-align: center; position: relative; }
+        .footer-logo { font-family: 'Playfair Display'; font-size: 15vw; font-weight: 900; opacity: 0.05; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 0; }
+        .footer-signature { font-family: 'Playfair Display'; font-style: italic; font-size: 4.5rem; color: var(--or-mat); margin-top: 50px; display: block; text-decoration: none; }
 
-        .footer-logo { 
-            font-family: 'Playfair Display'; font-size: 15vw; font-weight: 900; 
-            opacity: 0.05; position: absolute; left: 50%; top: 50%;
-            transform: translate(-50%, -50%); z-index: 0; white-space: nowrap;
-        }
+        .img-slot { width: 100%; height: 100%; }
+        .img-slot img { width: 100%; height: 100%; object-fit: cover; }
 
-        .footer-content { position: relative; z-index: 1; }
+        /* =============================================
+           CORRECTIONS MOBILE (L'ANTI-VIDE)
+           ============================================= */
+        @media (max-width: 768px) {
+            body { cursor: auto; }
+            #cursor, #cursor-follower { display: none; } /* On cache le curseur sur mobile */
 
-        /* Signature stylisée remplaçant le bouton */
-        .footer-signature {
-            font-family: 'Playfair Display';
-            font-style: italic;
-            font-size: 4.5rem;
-            color: var(--or-mat);
-            margin-top: 50px;
-            display: block;
-            text-decoration: none;
-            letter-spacing: -1px;
-            transition: 0.5s;
-        }
-        .footer-signature:hover {
-            color: var(--blanc-ivoire);
-            transform: scale(1.05);
-        }
+            #loader { font-size: 5vw; letter-spacing: 5px; }
 
-        .img-slot { 
-            width: 100%; height: 100%; display: flex; 
-            align-items: center; justify-content: center; 
-            background: #0a0a0a; color: #222;
-            font-size: 0.7rem; letter-spacing: 5px; font-family: 'Syncopate';
-        }
+            .hero-title { font-size: 18vw; }
+            .hero-title span { font-size: 5vw; letter-spacing: 4px; }
+            
+            .floating-img-space { width: 150px; height: 200px; }
 
+            .narrative { 
+                flex-direction: column; 
+                padding: 80px 5%; 
+                gap: 40px; 
+                text-align: center;
+            }
+            .narrative-content h2 { font-size: 2.5rem; }
+            .image-reveal-box { width: 100%; height: 450px; flex: none; box-shadow: 15px 15px 0px var(--or-mat); }
+
+            /* Galerie : On annule le défilement horizontal qui crée le vide */
+            .horizontal-gallery {
+                width: 100% !important;
+                height: auto;
+                flex-direction: column;
+                padding: 50px 0;
+            }
+            .gallery-strip {
+                flex-direction: column;
+                padding: 0 5%;
+            }
+            .gallery-panel {
+                width: 100% !important;
+                height: 50vh;
+                margin-right: 0;
+                margin-bottom: 30px;
+            }
+            .panel-desc { left: 20px; bottom: 20px; }
+            .panel-desc h3 { font-size: 1.8rem; }
+
+            .grid-expertise { grid-template-columns: 1fr; margin-top: 50px; }
+            .expertise { padding: 80px 5%; }
+            .expertise h2 { font-size: 3rem !important; }
+
+            .footer-signature { font-size: 2.5rem; }
+            .footer-logo { font-size: 20vw; }
+        }
     </style>
 </head>
 <body>
@@ -211,9 +197,9 @@
     <div id="loader">L'ART DU REGARD</div>
 
     <section class="hero">
-        <div class="floating-img-space" style="top: 10%; left: 5%;" data-speed="1.2"> <img src="_MG_0045.jpg"style="width:100% ; height : 100% ; object-fit : cover" > </div>
-        <div class="floating-img-space" style="bottom: 10%; right: 5%;" data-speed="1.5"><img src="P1563672-Modifier.jpg"style="width:100% ; height : 100% ; object-fit : cover" ></div>
-        <div class="floating-img-space" style="top: 15%; right: 15%; width: 180px; height: 250px;" data-speed="2"><img src="IMG_0977.jpeg"style="width:100% ; height : 100% ; object-fit : cover" ></div>
+        <div class="floating-img-space" style="top: 10%; left: 5%;" data-speed="1.2"> <img src="_MG_0045.jpg"> </div>
+        <div class="floating-img-space" style="bottom: 10%; right: 5%;" data-speed="1.5"><img src="P1563672-Modifier.jpg"></div>
+        <div class="floating-img-space" style="top: 15%; right: 15%; width: 180px; height: 250px;" data-speed="2"><img src="IMG_0977.jpeg"></div>
         
         <div class="hero-title">
             <span class="reveal-text">L'instantané devient</span>
@@ -235,7 +221,7 @@
             </div>
         </div>
         <div class="image-reveal-box anim-reveal">
-            <div class="img-slot"><img src="profil.jpg"style="width:100% ; height : 100% ; object-fit : cover" ></div>
+            <div class="img-slot"><img src="profil.jpg"></div>
         </div>
     </section>
 
@@ -243,19 +229,19 @@
         <div class="horizontal-gallery">
             <div class="gallery-strip">
                 <div class="gallery-panel">
-                    <div class="img-slot"><img src="IMG_1901.PNG"style="width:100% ; height : 100% ; object-fit : cover" ></div>
+                    <div class="img-slot"><img src="IMG_1901.PNG"></div>
                     <div class="panel-desc"><h3>ADRÉNALINE</h3><p>Couverture officielle CAN 2024</p></div>
                 </div>
                 <div class="gallery-panel">
-                    <div class="img-slot"><img src="IMG_1908.PNG"style="width:100% ; height : 100% ; object-fit : cover" ></div>
+                    <div class="img-slot"><img src="IMG_1908.PNG"></div>
                     <div class="panel-desc"><h3>VIBRATION</h3><p>FEMUA, PRIMUD & Scènes Evénementielle</p></div>
                 </div>
                 <div class="gallery-panel">
-                    <div class="img-slot"><img src="001 (20).jpg"style="width:100% ; height : 100% ; object-fit : cover" ></div>
+                    <div class="img-slot"><img src="001 (20).jpg"></div>
                     <div class="panel-desc"><h3>ÉTERNITÉ</h3><p>Mariages Traditionnels & Modernes</p></div>
                 </div>
                 <div class="gallery-panel">
-                    <div class="img-slot"><img src="IMG_1905.PNG"style="width:100% ; height : 100% ; object-fit : cover" ></div>
+                    <div class="img-slot"><img src="IMG_1905.PNG"></div>
                     <div class="panel-desc"><h3>PRESTIGE</h3><p>Studio & Branding Entreprise</p></div>
                 </div>
             </div>
@@ -287,10 +273,9 @@
     <footer>
         <div class="footer-logo">S.A. KOUAME</div>
         <div class="footer-content">
-            <p style="letter-spacing: 5px; margin-bottom: 10px; opacity: 0.5;">ABIDJAN, CÔTE D'IVOIRE</p>
+            <p style="letter-spacing: 5px; margin-bottom: 10px; opacity: 0.5;">ABIDJAN, CÔTE d'IVOIRE</p>
             <p style="font-size: 1.5rem; font-weight: 200;">+225 07 79 34 80 64</p>
             <p style="margin-bottom: 30px; color: var(--accent-ocre)">SERGEANICET08@GMAIL.COM</p>
-            
             <div class="footer-signature">Serge Anicet Kouamé</div>
         </div>
     </footer>
@@ -307,102 +292,58 @@
                 delay: 1,
                 onComplete: () => document.getElementById('loader').style.display = 'none'
             });
+        });
+
+        // --- CURSEUR (Desktop uniquement) ---
+        if (window.innerWidth > 768) {
+            const cursor = document.getElementById('cursor');
+            const follower = document.getElementById('cursor-follower');
             
-            gsap.from(".hero-title .reveal-text", { 
-                y: 150, 
-                skewY: 10,
-                opacity: 0, 
-                duration: 2, 
-                stagger: 0.3, 
-                ease: "power4.out" 
+            document.addEventListener('mousemove', (e) => {
+                gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0.1 });
+                gsap.to(follower, { x: e.clientX - 25, y: e.clientY - 25, duration: 0.4, ease: "power2.out" });
             });
-        });
 
-        // --- CURSEUR LUXE ---
-        const cursor = document.getElementById('cursor');
-        const follower = document.getElementById('cursor-follower');
-        
-        document.addEventListener('mousemove', (e) => {
-            gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0.1 });
-            gsap.to(follower, { x: e.clientX - 25, y: e.clientY - 25, duration: 0.4, ease: "power2.out" });
-        });
-
-        document.querySelectorAll('a, .exp-card, .gallery-panel, .footer-signature').forEach(el => {
-            el.addEventListener('mouseenter', () => {
-                gsap.to(cursor, { scale: 5, backgroundColor: "transparent", border: "1px solid #c4a484" });
-                gsap.to(follower, { scale: 0.5, backgroundColor: "#c4a484", opacity: 0.3 });
-            });
-            el.addEventListener('mouseleave', () => {
-                gsap.to(cursor, { scale: 1, backgroundColor: "#c4a484", border: "none" });
-                gsap.to(follower, { scale: 1, backgroundColor: "transparent", opacity: 1 });
-            });
-        });
-
-        // --- PARALLAXE IMAGES HERO ---
-        document.addEventListener('mousemove', (e) => {
-            const moveX = (e.clientX - window.innerWidth/2) / 30;
-            const moveY = (e.clientY - window.innerHeight/2) / 30;
-            gsap.utils.toArray(".floating-img-space").forEach(img => {
-                const speed = img.getAttribute('data-speed') || 1;
-                gsap.to(img, { 
-                    x: moveX * speed, 
-                    y: moveY * speed, 
-                    rotationY: moveX * 0.5,
-                    rotationX: -moveY * 0.5,
-                    duration: 1.5, 
-                    ease: "power2.out" 
+            // Parallaxe Hero
+            document.addEventListener('mousemove', (e) => {
+                const moveX = (e.clientX - window.innerWidth/2) / 30;
+                const moveY = (e.clientY - window.innerHeight/2) / 30;
+                gsap.utils.toArray(".floating-img-space").forEach(img => {
+                    const speed = img.getAttribute('data-speed') || 1;
+                    gsap.to(img, { x: moveX * speed, y: moveY * speed, duration: 1.5 });
                 });
             });
-        });
+        }
 
-        // --- GALERIE HORIZONTALE AVEC EFFET DE VITESSE ---
-        let sections = gsap.utils.toArray(".gallery-panel");
-        gsap.to(sections, {
-            xPercent: -100 * (sections.length - 1),
-            ease: "none",
-            scrollTrigger: {
-                trigger: ".horizontal-gallery",
-                pin: true,
-                scrub: 1,
-                end: () => "+=" + (window.innerWidth * 3)
-            }
-        });
+        // --- GALERIE HORIZONTALE (Conditionnée pour PC uniquement) ---
+        if (window.innerWidth > 768) {
+            let sections = gsap.utils.toArray(".gallery-panel");
+            gsap.to(sections, {
+                xPercent: -100 * (sections.length - 1),
+                ease: "none",
+                scrollTrigger: {
+                    trigger: ".horizontal-gallery",
+                    pin: true,
+                    scrub: 1,
+                    end: () => "+=" + (window.innerWidth * 3)
+                }
+            });
+        }
 
-        // --- REVEAL ANIMATIONS ---
+        // --- REVEAL ANIMATIONS (Fonctionne sur les deux) ---
         gsap.utils.toArray(".anim-fade").forEach(text => {
             gsap.from(text, {
-                scrollTrigger: {
-                    trigger: text,
-                    start: "top 85%",
-                },
-                y: 100,
-                opacity: 0,
-                duration: 1.5,
-                ease: "expo.out"
+                scrollTrigger: { trigger: text, start: "top 90%" },
+                y: 50, opacity: 0, duration: 1, ease: "power2.out"
             });
         });
 
         gsap.from(".anim-reveal", {
-            scrollTrigger: {
-                trigger: ".narrative",
-                start: "top 60%",
-            },
-            clipPath: "inset(0 100% 0 0)",
-            duration: 2,
-            ease: "expo.inOut"
-        });
-
-        // --- EFFET PARALLAXE FOOTER LOGO ---
-        gsap.to(".footer-logo", {
-            scrollTrigger: {
-                trigger: "footer",
-                start: "top bottom",
-                scrub: true
-            },
-            x: -200,
-            opacity: 0.2
+            scrollTrigger: { trigger: ".narrative", start: "top 70%" },
+            clipPath: "inset(0 100% 0 0)", duration: 1.5, ease: "expo.inOut"
         });
 
     </script>
 </body>
 </html>
+
