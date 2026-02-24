@@ -120,7 +120,6 @@
             position: relative; overflow: hidden; border: 1px solid rgba(196, 164, 132, 0.1);
         }
 
-        /* --- MODIFICATION LISIBILITÉ ÉCRITURES --- */
         .panel-desc { 
             position: absolute; bottom: 0; left: 0; width: 100%; 
             padding: 60px; z-index: 5; 
@@ -146,7 +145,7 @@
         }
         .btn-catalog-trigger:hover { background: var(--or-mat); color: #000; }
 
-        /* --- SECTION CACHÉE DU CATALOGUE (MODAL) --- */
+        /* --- SECTION DU CATALOGUE (MODAL AJUSTÉ) --- */
         #catalog-overlay {
             position: fixed; inset: 0; background: var(--marron-noir);
             z-index: 20000; display: none; overflow-y: auto; padding: 80px 5%;
@@ -156,10 +155,42 @@
             font-family: 'Syncopate'; cursor: pointer; z-index: 20001;
         }
         .catalog-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px; margin-top: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 60vh;
+            width: 100%;
         }
-        .catalog-img { width: 100%; height: 450px; object-fit: cover; border: 1px solid rgba(196,164,132,0.2); }
+        
+        /* Nouveau bouton WhatsApp stylisé */
+        .catalog-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 60px;
+            border: 2px solid var(--or-mat);
+            text-decoration: none;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+            background: rgba(196, 164, 132, 0.05);
+        }
+
+        .catalog-link::before {
+            content: 'WHATSAPP';
+            font-family: 'Syncopate';
+            font-size: 1.5rem;
+            letter-spacing: 10px;
+            color: var(--or-mat);
+        }
+
+        .catalog-link:hover {
+            background: var(--or-mat);
+        }
+
+        .catalog-link:hover::before {
+            color: var(--marron-noir);
+        }
 
         /* --- EXPERTISE --- */
         .expertise { padding: 150px 10%; background: var(--blanc-ivoire); color: var(--marron-noir); }
@@ -192,6 +223,8 @@
             .grid-expertise { grid-template-columns: 1fr; margin-top: 50px; }
             .expertise { padding: 80px 5%; }
             .footer-signature { font-size: 2.5rem; }
+            .catalog-link { padding: 30px; width: 80%; }
+            .catalog-link::before { font-size: 1rem; letter-spacing: 5px; }
         }
     </style>
 </head>
@@ -201,10 +234,7 @@
         <div class="close-btn" onclick="toggleCatalog()">[ FERMER ]</div>
         <h2 style="font-family: 'Playfair Display'; font-size: 3rem; text-align: center; color: var(--or-mat);">CATALOGUE</h2>
         <div class="catalog-grid">
-            <img class="catalog-img" src="IMG_1901.PNG">
-            <img class="catalog-img" src="IMG_1908.PNG">
-            <img class="catalog-img" src="001 (20).jpg">
-            <img class="catalog-img" src="IMG_1905.PNG">
+            <a href="https://wa.me/c/22579348064" target="_blank" class="catalog-link"></a>
         </div>
     </div>
 
@@ -302,7 +332,6 @@
     <script>
         gsap.registerPlugin(ScrollTrigger); 
 
-        // FONCTION POUR OUVRIR/FERMER LE CATALOGUE
         function toggleCatalog() {
             const overlay = document.getElementById('catalog-overlay');
             if (overlay.style.display === 'block') {
@@ -315,12 +344,10 @@
             }
         }
 
-        // --- LOADER ---
         window.addEventListener('load', () => {
             gsap.to("#loader", { y: "-100%", duration: 1.5, ease: "expo.inOut", delay: 1, onComplete: () => document.getElementById('loader').style.display = 'none' });
         }); 
 
-        // --- CURSEUR ---
         if (window.innerWidth > 768) {
             const cursor = document.getElementById('cursor');
             const follower = document.getElementById('cursor-follower');
@@ -328,7 +355,6 @@
                 gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0.1 });
                 gsap.to(follower, { x: e.clientX - 25, y: e.clientY - 25, duration: 0.4, ease: "power2.out" });
             }); 
-            // Effet flottant des images hero
             document.addEventListener('mousemove', (e) => {
                 const moveX = (e.clientX - window.innerWidth/2) / 30;
                 const moveY = (e.clientY - window.innerHeight/2) / 30;
@@ -339,7 +365,6 @@
             });
         } 
 
-        // --- GALERIE HORIZONTALE (CORRIGÉE) ---
         if (window.innerWidth > 768) {
             let sections = gsap.utils.toArray(".gallery-panel");
             gsap.to(sections, {
@@ -355,7 +380,6 @@
             });
         } 
 
-        // --- REVEAL ANIMATIONS (POUR LES SECTIONS DU BAS) ---
         gsap.utils.toArray(".anim-fade").forEach(text => {
             gsap.from(text, { 
                 scrollTrigger: { 
@@ -375,8 +399,10 @@
             duration: 1.5, 
             ease: "expo.inOut" 
         }); 
-
     </script>
 </body>
 </html> 
-               
+        
+       
+
+                   
