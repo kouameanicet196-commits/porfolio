@@ -7,7 +7,7 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,900;1,400&family=Montserrat:wght@200;400;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script> 
 
     <style>
         :root {
@@ -21,23 +21,22 @@
             --royal-gold: #ffd700;
             --deep-red: #4a0e0e;
             --ombre-douce: rgba(0,0,0,0.6);
-        }
+        } 
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
-        /* Correction curseur par défaut pour éviter les bugs mobile */
         html, body { 
             width: 100%;
             overflow-x: hidden; 
             background-color: var(--marron-noir);
-        }
+        } 
 
         body { 
             color: var(--beige-sable); 
             font-family: 'Montserrat', sans-serif;
             line-height: 1.6;
-            cursor: none; /* Désactivé sur mobile via media query */
-        }
+            cursor: none; 
+        } 
 
         /* --- TEXTURE --- */
         body::after {
@@ -45,9 +44,9 @@
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-image: url("https://grainy-gradients.vercel.app/noise.svg");
             opacity: 0.05; pointer-events: none; z-index: 9999;
-        }
+        } 
 
-        /* --- CURSEUR (Caché sur mobile) --- */
+        /* --- CURSEUR --- */
         #cursor {
             position: fixed; width: 12px; height: 12px; background: var(--or-mat);
             border-radius: 50%; pointer-events: none; z-index: 10001; mix-blend-mode: difference;
@@ -55,7 +54,7 @@
         #cursor-follower {
             position: fixed; width: 50px; height: 50px; border: 1px solid var(--or-mat);
             border-radius: 50%; pointer-events: none; z-index: 10000; transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1);
-        }
+        } 
 
         /* --- LOADER --- */
         #loader {
@@ -63,7 +62,7 @@
             z-index: 10002; display: flex; align-items: center; justify-content: center;
             font-family: 'Syncopate'; font-size: 2vw; letter-spacing: 15px; color: var(--or-mat);
             text-align: center;
-        }
+        } 
 
         /* --- HERO SECTION --- */
         .hero {
@@ -72,42 +71,42 @@
             background: linear-gradient(135deg, #0a0706 0%, #2d1e17 50%, #0a0706 100%);
             background-size: 400% 400%;
             animation: gradientMove 15s ease infinite;
-        }
+        } 
 
         @keyframes gradientMove {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
-        }
+        } 
 
         .hero-title {
             font-family: 'Playfair Display', serif; font-size: 12vw; line-height: 0.8;
             z-index: 2; text-align: center; text-transform: uppercase; font-weight: 900;
             filter: drop-shadow(0 20px 50px rgba(0,0,0,0.8));
-        }
+        } 
 
-        .hero-title span { display: block; font-style: italic; font-weight: 400; font-size: 3.5vw; letter-spacing: 8px; color: var(--or-mat); }
+        .hero-title span { display: block; font-style: italic; font-weight: 400; font-size: 3.5vw; letter-spacing: 8px; color: var(--or-mat); } 
 
         .floating-img-space {
             position: absolute; width: 300px; height: 400px; background: rgba(255,255,255,0.02);
             border: 1px solid rgba(196, 164, 132, 0.2); overflow: hidden;
             box-shadow: 0 30px 60px var(--ombre-douce);
-        }
+        } 
 
         /* --- SECTION NARRATIVE --- */
         .narrative {
             padding: 180px 10%; display: flex; gap: 80px; background: var(--beige-sable); color: var(--marron-noir);
             align-items: center; position: relative;
-        }
+        } 
 
         .narrative-content { flex: 1.2; z-index: 2; }
         .narrative-content h2 { font-family: 'Playfair Display'; font-size: 4rem; margin-bottom: 30px; line-height: 1; }
-        .narrative-content p { font-size: 1.2rem; line-height: 2; margin-bottom: 25px; }
+        .narrative-content p { font-size: 1.2rem; line-height: 2; margin-bottom: 25px; } 
 
         .image-reveal-box {
             flex: 0.8; height: 750px; background: var(--marron-riche); position: relative;
             overflow: hidden; box-shadow: 30px 30px 0px var(--or-mat);
-        }
+        } 
 
         /* --- GALERIE HORIZONTALE --- */
         .horizontal-gallery-wrapper { overflow: hidden; }
@@ -120,92 +119,109 @@
             width: 75vw; height: 80vh; margin-right: 12vw; background: #111;
             position: relative; overflow: hidden; border: 1px solid rgba(196, 164, 132, 0.1);
         }
-        .panel-desc { position: absolute; bottom: 60px; left: 60px; z-index: 5; font-family: 'Syncopate'; mix-blend-mode: exclusion; }
-        .panel-desc h3 { font-size: 3rem; color: var(--or-mat); }
+
+        /* --- MODIFICATION LISIBILITÉ ÉCRITURES --- */
+        .panel-desc { 
+            position: absolute; bottom: 0; left: 0; width: 100%; 
+            padding: 60px; z-index: 5; 
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%);
+            mix-blend-mode: normal; 
+        }
+        .panel-desc h3 { 
+            font-family: 'Playfair Display', serif; font-size: 3.5rem; 
+            color: var(--or-mat); text-shadow: 2px 2px 15px rgba(0,0,0,0.8);
+            letter-spacing: 2px;
+        } 
+        .panel-desc p {
+            color: var(--blanc-ivoire); font-weight: 400; letter-spacing: 3px;
+            text-shadow: 1px 1px 5px rgba(0,0,0,0.8);
+        }
+
+        /* --- STYLE DU BOUTON CATALOGUE --- */
+        .btn-catalog-trigger {
+            margin-top: 20px; display: inline-block; padding: 15px 35px;
+            border: 1px solid var(--or-mat); color: var(--or-mat);
+            font-family: 'Syncopate'; font-size: 0.7rem; letter-spacing: 3px;
+            cursor: pointer; transition: 0.4s; background: rgba(0,0,0,0.3);
+        }
+        .btn-catalog-trigger:hover { background: var(--or-mat); color: #000; }
+
+        /* --- SECTION CACHÉE DU CATALOGUE (MODAL) --- */
+        #catalog-overlay {
+            position: fixed; inset: 0; background: var(--marron-noir);
+            z-index: 20000; display: none; overflow-y: auto; padding: 80px 5%;
+        }
+        .close-btn {
+            position: fixed; top: 30px; right: 40px; color: var(--or-mat);
+            font-family: 'Syncopate'; cursor: pointer; z-index: 20001;
+        }
+        .catalog-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px; margin-top: 50px;
+        }
+        .catalog-img { width: 100%; height: 450px; object-fit: cover; border: 1px solid rgba(196,164,132,0.2); }
 
         /* --- EXPERTISE --- */
         .expertise { padding: 150px 10%; background: var(--blanc-ivoire); color: var(--marron-noir); }
         .grid-expertise { display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px; margin-top: 100px; }
         .exp-card { padding: 80px 50px; border: 1px solid #eee; background: #fff; position: relative; transition: all 0.6s ease; }
-        .exp-card h3 { font-family: 'Playfair Display'; font-size: 2.2rem; margin-bottom: 20px; }
+        .exp-card h3 { font-family: 'Playfair Display'; font-size: 2.2rem; margin-bottom: 20px; } 
 
         /* --- FOOTER --- */
         footer { padding: 150px 5%; background: var(--marron-noir); color: var(--or-mat); text-align: center; position: relative; }
         .footer-logo { font-family: 'Playfair Display'; font-size: 15vw; font-weight: 900; opacity: 0.05; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 0; }
-        .footer-signature { font-family: 'Playfair Display'; font-style: italic; font-size: 4.5rem; color: var(--or-mat); margin-top: 50px; display: block; text-decoration: none; }
+        .footer-signature { font-family: 'Playfair Display'; font-style: italic; font-size: 4.5rem; color: var(--or-mat); margin-top: 50px; display: block; text-decoration: none; } 
 
         .img-slot { width: 100%; height: 100%; }
-        .img-slot img { width: 100%; height: 100%; object-fit: cover; }
+        .img-slot img { width: 100%; height: 100%; object-fit: cover; } 
 
-        /* =============================================
-           CORRECTIONS MOBILE (L'ANTI-VIDE)
-           ============================================= */
         @media (max-width: 768px) {
             body { cursor: auto; }
-            #cursor, #cursor-follower { display: none; } /* On cache le curseur sur mobile */
-
-            #loader { font-size: 5vw; letter-spacing: 5px; }
-
+            #cursor, #cursor-follower { display: none; } 
+            #loader { font-size: 5vw; letter-spacing: 5px; } 
             .hero-title { font-size: 18vw; }
             .hero-title span { font-size: 5vw; letter-spacing: 4px; }
-            
-            .floating-img-space { width: 150px; height: 200px; }
-
-            .narrative { 
-                flex-direction: column; 
-                padding: 80px 5%; 
-                gap: 40px; 
-                text-align: center;
-            }
+            .narrative { flex-direction: column; padding: 80px 5%; gap: 40px; text-align: center; }
             .narrative-content h2 { font-size: 2.5rem; }
-            .image-reveal-box { width: 100%; height: 450px; flex: none; box-shadow: 15px 15px 0px var(--or-mat); }
-
-            /* Galerie : On annule le défilement horizontal qui crée le vide */
-            .horizontal-gallery {
-                width: 100% !important;
-                height: auto;
-                flex-direction: column;
-                padding: 50px 0;
-            }
-            .gallery-strip {
-                flex-direction: column;
-                padding: 0 5%;
-            }
-            .gallery-panel {
-                width: 100% !important;
-                height: 50vh;
-                margin-right: 0;
-                margin-bottom: 30px;
-            }
-            .panel-desc { left: 20px; bottom: 20px; }
-            .panel-desc h3 { font-size: 1.8rem; }
-
+            .image-reveal-box { width: 100%; height: 450px; flex: none; box-shadow: 15px 15px 0px var(--or-mat); } 
+            .horizontal-gallery { width: 100% !important; height: auto; flex-direction: column; padding: 50px 0; }
+            .gallery-strip { flex-direction: column; padding: 0 5%; }
+            .gallery-panel { width: 100% !important; height: 50vh; margin-right: 0; margin-bottom: 30px; }
+            .panel-desc { padding: 20px; }
+            .panel-desc h3 { font-size: 2rem; }
             .grid-expertise { grid-template-columns: 1fr; margin-top: 50px; }
             .expertise { padding: 80px 5%; }
-            .expertise h2 { font-size: 3rem !important; }
-
             .footer-signature { font-size: 2.5rem; }
-            .footer-logo { font-size: 20vw; }
         }
     </style>
 </head>
-<body>
+<body> 
+
+    <div id="catalog-overlay">
+        <div class="close-btn" onclick="toggleCatalog()">[ FERMER ]</div>
+        <h2 style="font-family: 'Playfair Display'; font-size: 3rem; text-align: center; color: var(--or-mat);">CATALOGUE</h2>
+        <div class="catalog-grid">
+            <img class="catalog-img" src="IMG_1901.PNG">
+            <img class="catalog-img" src="IMG_1908.PNG">
+            <img class="catalog-img" src="001 (20).jpg">
+            <img class="catalog-img" src="IMG_1905.PNG">
+        </div>
+    </div>
 
     <div id="cursor"></div>
     <div id="cursor-follower"></div>
-    
-    <div id="loader">L'ART DU REGARD</div>
+    <div id="loader">L'ART DU REGARD</div> 
 
     <section class="hero">
-        <div class="floating-img-space" style="top: 10%; left: 5%;" data-speed="1.2"> <img src="IMG_0045.jpg"style="width:100% ; height : 100% ; object-fit : cover" > </div>
-        <div class="floating-img-space" style="bottom: 10%; right: 5%;" data-speed="1.5"><img src="P1563672-Modifier.jpg"style="width:100% ; height : 100% ; object-fit : cover" ></div>
-        <div class="floating-img-space" style="top: 15%; right: 15%; width: 180px; height: 250px;" data-speed="2"><img src="IMG_0977.jpeg"style="width:100% ; height : 100% ; object-fit : cover" ></div>
+        <div class="floating-img-space" style="top: 10%; left: 5%;" data-speed="1.2"> <img src="IMG_0045.jpg" style="width:100%; height:100%; object-fit:cover;"> </div>
+        <div class="floating-img-space" style="bottom: 10%; right: 5%;" data-speed="1.5"><img src="P1563672-Modifier.jpg" style="width:100%; height:100%; object-fit:cover;"></div>
+        <div class="floating-img-space" style="top: 15%; right: 15%; width: 180px; height: 250px;" data-speed="2"><img src="IMG_0977.jpeg" style="width:100%; height:100%; object-fit:cover;"></div>
         
         <div class="hero-title">
             <span class="reveal-text">L'instantané devient</span>
             <div class="reveal-text">ÉTERNEL</div>
         </div>
-    </section>
+    </section> 
 
     <section class="narrative">
         <div class="narrative-content">
@@ -221,90 +237,98 @@
             </div>
         </div>
         <div class="image-reveal-box anim-reveal">
-            <div class="img-slot"><img src="profil.jpg"style="width:100% ; height : 100% ; object-fit : cover ; object-position : 10% 20% " ></div>
+            <div class="img-slot"><img src="profil.jpg" style="width:100%; height:100%; object-fit:cover; object-position: 10% 20%;"></div>
         </div>
-    </section>
+    </section> 
 
     <section class="horizontal-gallery-wrapper">
         <div class="horizontal-gallery">
             <div class="gallery-strip">
                 <div class="gallery-panel">
-                    <div class="img-slot"><img src="IMG_1901.PNG"style="width:100% ; height : 100% ; object-fit : cover" ></div>
+                    <div class="img-slot"><img src="IMG_1901.PNG" style="width:100%; height:100%; object-fit:cover;"></div>
                     <div class="panel-desc"><h3>ADRÉNALINE</h3><p>Couverture officielle CAN 2024</p></div>
                 </div>
                 <div class="gallery-panel">
-                    <div class="img-slot"><img src="IMG_1908.PNG"style="width:100% ; height : 100% ; object-fit : cover ; object-position : center 10% ; " ></div>
-                    <div class="panel-desc"><h3>VIBRATION</h3><p>FEMUA, PRIMUD & Scènes Evénementielle</p></div>
+                    <div class="img-slot"><img src="IMG_1908.PNG" style="width:100%; height:100%; object-fit:cover; object-position: center 10%;"></div>
+                    <div class="panel-desc"><h3>VIBRATION</h3><p>FEMUA, PRIMUD & Scènes Événementielles</p></div>
                 </div>
                 <div class="gallery-panel">
-                    <div class="img-slot"><img src="001 (20).jpg"style="width:100% ; height : 100% ; object-fit : cover" ></div>
+                    <div class="img-slot"><img src="001 (20).jpg" style="width:100%; height:100%; object-fit:cover;"></div>
                     <div class="panel-desc"><h3>ÉTERNITÉ</h3><p>Mariages Traditionnels & Modernes</p></div>
                 </div>
                 <div class="gallery-panel">
-                    <div class="img-slot"><img src="IMG_1905.PNG"style="width:100% ; height : 100% ; object-fit : cover ; object-position : 10%  10% " ></div>
-                    <div class="panel-desc"><h3>PRESTIGE</h3><p>Studio & Branding Entreprise</p></div>
+                    <div class="img-slot"><img src="IMG_1905.PNG" style="width:100%; height:100%; object-fit:cover; object-position: 10% 10%;"></div>
+                    <div class="panel-desc">
+                        <h3>PRESTIGE</h3>
+                        <p>Studio & Branding Entreprise</p>
+                        <div class="btn-catalog-trigger" onclick="toggleCatalog()">VOIR LE CATALOGUE</div>
+                    </div>
                 </div>
             </div>
         </div>
-    </section>
+    </section> 
 
     <section class="expertise">
         <h2 style="font-family: 'Playfair Display'; font-size: 5rem; text-align: left; line-height: 0.8; margin-bottom: 50px;" class="anim-fade">EXPERTISE<br><span style="font-size: 2rem; color: var(--accent-ocre)">ET VISION</span></h2>
         <div class="grid-expertise">
             <div class="exp-card">
                 <h3>Vitesse & Précision</h3>
-                <p>Livraison des images retouchées sous 48 heures. Parce que l'actualité n'attend pas.</p>
+                <p>Livraison des images retouchées sous 48 heures.</p>
             </div>
             <div class="exp-card">
                 <h3>Matériel de Pointe</h3>
-                <p>Utilisation des boîtiers dernière génération pour une clarté absolue, même en basse lumière.</p>
+                <p>Utilisation des boîtiers dernière génération.</p>
             </div>
             <div class="exp-card">
                 <h3>Direction Artistique</h3>
-                <p>Je gère vos projets de A à Z : du concept initial à la retouche finale sous Photoshop & Lightroom.</p>
+                <p>Je gère vos projets de A à Z.</p>
             </div>
             <div class="exp-card">
                 <h3>Réseau & Partenariat</h3>
-                <p>Partenaire de confiance pour des marques globales comme 1xbet et des institutions comme la CAF.</p>
+                <p>Partenaire de confiance (1xbet, CAF).</p>
             </div>
         </div>
-    </section>
+    </section> 
 
     <footer>
         <div class="footer-logo">S.A. KOUAME</div>
         <div class="footer-content">
             <p style="letter-spacing: 5px; margin-bottom: 10px; opacity: 0.5;">ABIDJAN, CÔTE d'IVOIRE</p>
             <p style="font-size: 1.5rem; font-weight: 200;">+225 07 79 34 80 64</p>
-            <p style="margin-bottom: 30px; color: var(--accent-ocre)">SERGEANICET08@GMAIL.COM</p>
             <div class="footer-signature">Serge Anicet Kouamé</div>
         </div>
-    </footer>
+    </footer> 
 
     <script>
-        gsap.registerPlugin(ScrollTrigger);
+        gsap.registerPlugin(ScrollTrigger); 
+
+        // FONCTION POUR OUVRIR/FERMER LE CATALOGUE
+        function toggleCatalog() {
+            const overlay = document.getElementById('catalog-overlay');
+            if (overlay.style.display === 'block') {
+                gsap.to(overlay, { opacity: 0, duration: 0.5, onComplete: () => overlay.style.display = 'none' });
+                document.body.style.overflow = 'auto';
+            } else {
+                overlay.style.display = 'block';
+                gsap.fromTo(overlay, { opacity: 0 }, { opacity: 1, duration: 0.5 });
+                document.body.style.overflow = 'hidden';
+            }
+        }
 
         // --- LOADER ---
         window.addEventListener('load', () => {
-            gsap.to("#loader", { 
-                y: "-100%", 
-                duration: 1.5, 
-                ease: "expo.inOut", 
-                delay: 1,
-                onComplete: () => document.getElementById('loader').style.display = 'none'
-            });
-        });
+            gsap.to("#loader", { y: "-100%", duration: 1.5, ease: "expo.inOut", delay: 1, onComplete: () => document.getElementById('loader').style.display = 'none' });
+        }); 
 
-        // --- CURSEUR (Desktop uniquement) ---
+        // --- CURSEUR ---
         if (window.innerWidth > 768) {
             const cursor = document.getElementById('cursor');
             const follower = document.getElementById('cursor-follower');
-            
             document.addEventListener('mousemove', (e) => {
                 gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0.1 });
                 gsap.to(follower, { x: e.clientX - 25, y: e.clientY - 25, duration: 0.4, ease: "power2.out" });
-            });
-
-            // Parallaxe Hero
+            }); 
+            // Effet flottant des images hero
             document.addEventListener('mousemove', (e) => {
                 const moveX = (e.clientX - window.innerWidth/2) / 30;
                 const moveY = (e.clientY - window.innerHeight/2) / 30;
@@ -313,37 +337,46 @@
                     gsap.to(img, { x: moveX * speed, y: moveY * speed, duration: 1.5 });
                 });
             });
-        }
+        } 
 
-        // --- GALERIE HORIZONTALE (Conditionnée pour PC uniquement) ---
+        // --- GALERIE HORIZONTALE (CORRIGÉE) ---
         if (window.innerWidth > 768) {
             let sections = gsap.utils.toArray(".gallery-panel");
             gsap.to(sections, {
                 xPercent: -100 * (sections.length - 1),
                 ease: "none",
                 scrollTrigger: {
-                    trigger: ".horizontal-gallery",
-                    pin: true,
+                    trigger: ".horizontal-gallery-wrapper",
+                    pin: true, 
                     scrub: 1,
-                    end: () => "+=" + (window.innerWidth * 3)
+                    start: "top top",
+                    end: () => "+=" + document.querySelector(".horizontal-gallery").offsetWidth 
                 }
             });
-        }
+        } 
 
-        // --- REVEAL ANIMATIONS (Fonctionne sur les deux) ---
+        // --- REVEAL ANIMATIONS (POUR LES SECTIONS DU BAS) ---
         gsap.utils.toArray(".anim-fade").forEach(text => {
-            gsap.from(text, {
-                scrollTrigger: { trigger: text, start: "top 90%" },
-                y: 50, opacity: 0, duration: 1, ease: "power2.out"
+            gsap.from(text, { 
+                scrollTrigger: { 
+                    trigger: text, 
+                    start: "top 95%", 
+                    toggleActions: "play none none none" 
+                }, 
+                y: 30, 
+                opacity: 0, 
+                duration: 1 
             });
-        });
+        }); 
 
-        gsap.from(".anim-reveal", {
-            scrollTrigger: { trigger: ".narrative", start: "top 70%" },
-            clipPath: "inset(0 100% 0 0)", duration: 1.5, ease: "expo.inOut"
-        });
+        gsap.from(".anim-reveal", { 
+            scrollTrigger: { trigger: ".narrative", start: "top 80%" }, 
+            clipPath: "inset(0 100% 0 0)", 
+            duration: 1.5, 
+            ease: "expo.inOut" 
+        }); 
 
     </script>
 </body>
-</html>
-
+</html> 
+               
