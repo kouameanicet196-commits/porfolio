@@ -345,7 +345,7 @@
         }
 
         window.addEventListener('load', () => {
-            gsap.to("#loader", { y: "-100%", duration: 0.3, ease: "expo.inOut", delay: 1, onComplete: () => document.getElementById('loader').style.display = 'none' });
+            gsap.to("#loader", { y: "-100%", duration: 0.1, ease: "expo.inOut", delay: 0.2, onComplete: () => document.getElementById('loader').style.display = 'none' });
         }); 
 
         if (window.innerWidth > 768) {
