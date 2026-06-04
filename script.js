@@ -1,245 +1,648 @@
-gsap.registerPlugin(ScrollTrigger); 
+-(function () {
+  "use strict";
 
-let mouseX = 0, mouseY = 0;
-let cursorX = 0, cursorY = 0;
-let followerX = 0, followerY = 0;
-
-const cursor = document.getElementById('cursor');
-const follower = document.getElementById('cursor-follower');
-
-// --- CURSEUR PERSONNALISÉ AMÉLIORÉ ---
-if (window.innerWidth > 768) {
-    // Suivi en temps réel avec des calculs séparés
-    document.addEventListener('mousemove', (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-
-        // Animer le point central
-        gsap.to(cursor, {
-            x: mouseX - 4,
-            y: mouseY - 4,
-            duration: 0.1,
-            overwrite: 'auto'
-        });
-
-        // Animer le cercle follower avec un délai
-        gsap.to(follower, {
-            x: mouseX - 20,
-            y: mouseY - 20,
-            duration: 0.3,
-            ease: "power2.out",
-            overwrite: 'auto'
-        });
+  // ========== 0. INITIALISATION AOS (animations au scroll) ==========
+  if (window.AOS && typeof window.AOS.init === "function") {
+    window.AOS.init({
+      duration: 800,
+      easing: "ease-out-cubic",
+      once: true,
+      offset: 100,
     });
+  }
 
-    // Parallax doux sur les images flottantes
-    document.addEventListener('mousemove', (e) => {
-        const moveX = (e.clientX - window.innerWidth / 2) / 30;
-        const moveY = (e.clientY - window.innerHeight / 2) / 30;
-        gsap.utils.toArray(".floating-img-space").forEach(img => {
-            const speed = parseFloat(img.getAttribute('data-speed')) || 1;
-            gsap.to(img, {
-                x: moveX * speed,
-                y: moveY * speed,
-                duration: 0.4,
-                overwrite: 'auto'
-            });
-        });
-    });
-
-    // Effet hover sur les boutons et éléments interactifs
-    document.addEventListener('mouseenter', (e) => {
-        if (e.target.tagName === 'BUTTON' || e.target.classList.contains('btn-submit') || 
-            e.target.classList.contains('btn-catalog-trigger') || e.target.tagName === 'A' ||
-            e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-            gsap.to(follower, { scale: 1.5, opacity: 0.8, borderColor: '#ffd700' });
-            gsap.to(cursor, { scale: 0.5, opacity: 0.5 });
-        }
-    }, true);
-
-    document.addEventListener('mouseleave', (e) => {
-        if (e.target.tagName === 'BUTTON' || e.target.classList.contains('btn-submit') || 
-            e.target.classList.contains('btn-catalog-trigger') || e.target.tagName === 'A' ||
-            e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-            gsap.to(follower, { scale: 1, opacity: 1, borderColor: 'var(--or-mat)' });
-            gsap.to(cursor, { scale: 1, opacity: 1 });
-        }
-    }, true);
-}
-
-// --- FONCTION CATALOGUE ---
-function toggleCatalog() {
-    const overlay = document.getElementById('catalog-overlay');
-    if (overlay.style.display === 'block') {
-        gsap.to(overlay, { 
-            opacity: 0, 
-            duration: 0.5, 
-            onComplete: () => overlay.style.display = 'none' 
-        });
-        document.body.style.overflow = 'auto';
-    } else {
-        overlay.style.display = 'block';
-        gsap.fromTo(overlay, 
-            { opacity: 0 }, 
-            { opacity: 1, duration: 0.3 }
-        );
-        document.body.style.overflow = 'hidden';
-    }
-}
-
-// --- LOADER ---
-window.addEventListener('load', () => {
-    gsap.to("#loader", { 
-        y: "-100%", 
-        duration: 0.6, 
-        ease: "expo.inOut", 
-        delay: 0.2, 
-        onComplete: () => {
-            document.getElementById('loader').style.display = 'none';
-        }
-    });
-});
-
-// --- GALERIE HORIZONTALE ---
-if (window.innerWidth > 768) {
-    let sections = gsap.utils.toArray(".gallery-panel");
-    gsap.to(sections, {
-        xPercent: -100 * (sections.length - 1),
-        ease: "none",
-        scrollTrigger: {
-            trigger: ".horizontal-gallery-wrapper",
-            pin: true,
-            scrub: 1,
-            start: "top top",
-            end: () => "+=" + document.querySelector(".horizontal-gallery").offsetWidth,
-            markers: false
-        }
-    });
-}
-
-// --- ANIMATIONS FADE ---
-gsap.utils.toArray(".anim-fade").forEach(text => {
-    gsap.from(text, {
-        scrollTrigger: {
-            trigger: text,
-            start: "top 95%",
-            toggleActions: "play none none none"
-        },
-        y: 30,
-        opacity: 0,
-        duration: 0.8,
-        ease: "power2.out"
-    });
-});
-
-// --- ANIMATION REVEAL ---
-gsap.from(".anim-reveal", {
-    scrollTrigger: {
-        trigger: ".narrative",
-        start: "top 80%"
-    },
-    clipPath: "inset(0 100% 0 0)",
-    duration: 0.8,
-    ease: "expo.inOut"
-});
-
-// --- GESTION DU FORMULAIRE ---
-document.getElementById('contact-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const name = document.getElementById('name').value;
-    const email = document.getElementById('email').value;
-    const message = document.getElementById('message').value;
-    
-    const button = document.querySelector('.btn-submit');
-    const originalText = button.textContent;
-    
-    // Animation de succès
-    gsap.to(button, {
-        scale: 0.95,
-        duration: 0.2,
-        yoyo: true,
-        repeat: 1
-    });
-    
-    button.textContent = '✓ ENVOYÉ !';
-    gsap.to(button, {
-        backgroundColor: '#25d366',
-        duration: 0.4
-    });
-    
-    // Réinitialiser après 2 secondes
+  // ========== 1. PRELOADER ==========
+  window.addEventListener("load", function () {
+    const loader = document.getElementById("loader");
+    if (!loader) return;
+    loader.classList.add("hidden");
     setTimeout(() => {
+      if (loader) loader.style.display = "none";
+    }, 1000);
+  });
+
+  // ========== 2. CURSEUR PERSONNALISÉ ==========
+  const cursor = document.getElementById("cursor");
+  const follower = document.getElementById("cursor-follower");
+  if (cursor && follower && window.innerWidth > 768) {
+    let mouseX = 0,
+      mouseY = 0;
+    document.addEventListener("mousemove", (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      cursor.style.transform = `translate(${mouseX - 4}px, ${mouseY - 4}px)`;
+      follower.style.transform = `translate(${mouseX - 20}px, ${mouseY - 20}px)`;
+    });
+  }
+
+  // ========== 3. CATALOGUE OVERLAY (ouverture/fermeture) ==========
+  const catalogOverlay = document.getElementById("catalog-overlay");
+  const catalogCloseBtn = document.getElementById("catalog-close");
+  const catalogOpenButtons = document.querySelectorAll("[data-action='open-catalog']");
+
+  function setCatalogOpen(isOpen) {
+    if (!catalogOverlay) return;
+    catalogOverlay.style.display = isOpen ? "block" : "none";
+    catalogOverlay.setAttribute("aria-hidden", String(!isOpen));
+  }
+
+  function toggleCatalog() {
+    if (!catalogOverlay) return;
+    const isOpen = catalogOverlay.style.display === "block";
+    setCatalogOpen(!isOpen);
+  }
+
+  catalogOpenButtons.forEach((btn) => {
+    btn.addEventListener("click", () => setCatalogOpen(true));
+  });
+
+  if (catalogCloseBtn) {
+    catalogCloseBtn.addEventListener("click", () => setCatalogOpen(false));
+  }
+
+  // Expose pour compat arrière-plan si un clic inline existe encore quelque part
+  window.toggleCatalog = toggleCatalog;
+
+  // ========== 4. GSAP ANIMATIONS (galerie horizontale) ==========
+
+  if (window.gsap && window.ScrollTrigger) {
+    try {
+      window.gsap.registerPlugin(window.ScrollTrigger);
+      const galleryWrapper = document.querySelector(".horizontal-gallery-wrapper");
+      if (galleryWrapper) {
+        const strip = document.querySelector(".gallery-strip");
+        if (strip) {
+          const isMobile =
+            window.matchMedia &&
+            window.matchMedia("(max-width: 768px)").matches;
+
+          // Ultra responsive: sur mobile, on évite le pin/transform GSAP.
+          // Le CSS gère déjà la version “stack vertical”.
+          if (!isMobile) {
+            window.gsap.to(strip, {
+              x: () => -(strip.scrollWidth - window.innerWidth),
+              ease: "none",
+              scrollTrigger: {
+                trigger: galleryWrapper,
+                start: "top top",
+                end: () => "+=" + (strip.scrollWidth - window.innerWidth),
+                scrub: 1,
+                pin: true,
+                anticipatePin: 1,
+                invalidateOnRefresh: true,
+              },
+            });
+          }
+        }
+      }
+    } catch (err) {
+      // Silencieux : on évite de casser la page si GSAP/ScrollTrigger échoue.
+      console.warn("GSAP init failed", err);
+    }
+  }
+
+
+  // ========== 5. FORMULAIRE DE CONTACT (validation + simulation) ==========
+  const contactForm = document.getElementById("contact-form");
+  if (contactForm) {
+    const nameInput = document.getElementById("name");
+    const emailInput = document.getElementById("email");
+    const subjectSelect = document.getElementById("subject");
+    const messageInput = document.getElementById("message");
+    const submitBtn = contactForm.querySelector(".btn-submit");
+    const loaderSpan = submitBtn ? submitBtn.querySelector(".btn-loader") : null;
+    const successMsg = document.getElementById("form-success");
+
+    function showError(input, errorSpan, message) {
+      if (!input || !errorSpan) return;
+      errorSpan.textContent = message;
+      errorSpan.classList.add("show");
+      input.style.borderColor = "#e74c3c";
+    }
+
+    function clearError(input, errorSpan) {
+      if (!input || !errorSpan) return;
+      errorSpan.textContent = "";
+      errorSpan.classList.remove("show");
+      input.style.borderColor = "rgba(196, 164, 132, 0.3)";
+    }
+
+    function validateName() {
+      const err = document.getElementById("name-error");
+      if (!nameInput || !err) return false;
+      if (nameInput.value.trim() === "") {
+        showError(nameInput, err, "Champ requis");
+        return false;
+      }
+      clearError(nameInput, err);
+      return true;
+    }
+
+    function validateEmail() {
+      const err = document.getElementById("email-error");
+      if (!emailInput || !err) return false;
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (emailInput.value.trim() === "") {
+        showError(emailInput, err, "Champ requis");
+        return false;
+      }
+      if (!emailRegex.test(emailInput.value.trim())) {
+        showError(emailInput, err, "Format email invalide");
+        return false;
+      }
+      clearError(emailInput, err);
+      return true;
+    }
+
+    function validateSubject() {
+      const err = document.getElementById("subject-error");
+      if (!subjectSelect) return false;
+      if (!err) {
+        return subjectSelect.value !== "";
+      }
+      if (subjectSelect.value === "") {
+        showError(subjectSelect, err, "Veuillez choisir un sujet");
+        return false;
+      }
+      clearError(subjectSelect, err);
+      return true;
+    }
+
+    function validateMessage() {
+      const err = document.getElementById("message-error");
+      if (!messageInput || !err) return false;
+      if (messageInput.value.trim() === "") {
+        showError(messageInput, err, "Champ requis");
+        return false;
+      }
+      clearError(messageInput, err);
+      return true;
+    }
+
+    if (nameInput) nameInput.addEventListener("input", validateName);
+    if (emailInput) emailInput.addEventListener("input", validateEmail);
+    if (subjectSelect) subjectSelect.addEventListener("change", validateSubject);
+    if (messageInput) messageInput.addEventListener("input", validateMessage);
+
+    contactForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const okName = validateName();
+      const okEmail = validateEmail();
+      const okSubject = validateSubject();
+      const okMessage = validateMessage();
+
+      if (okName && okEmail && okSubject && okMessage) {
+        if (loaderSpan) loaderSpan.classList.add("show");
+        if (submitBtn) submitBtn.disabled = true;
+
+        setTimeout(() => {
+          if (loaderSpan) loaderSpan.classList.remove("show");
+          if (successMsg) successMsg.classList.add("show");
+          if (submitBtn) submitBtn.disabled = false;
+
+          contactForm.reset();
+
+          setTimeout(() => {
+            if (successMsg) successMsg.classList.remove("show");
+          }, 5000);
+        }, 1500);
+      }
+    });
+  }
+
+  // ========== 6. BOUTON WHATSAPP DÉPLAÇABLE ========== 
+  const whatsappBtn = document.getElementById("whatsapp-float");
+  if (whatsappBtn) {
+    let isDragging = false;
+    let startX = 0;
+    let startY = 0;
+    let initialLeft = 0;
+    let initialTop = 0;
+
+    const onDragStart = (e) => {
+      e.preventDefault();
+      isDragging = true;
+      whatsappBtn.classList.add("dragging");
+
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+      const rect = whatsappBtn.getBoundingClientRect();
+      startX = clientX;
+      startY = clientY;
+      initialLeft = rect.left;
+      initialTop = rect.top;
+
+      document.body.style.userSelect = "none";
+    };
+
+    const getEdgeGap = () => {
+      const raw = getComputedStyle(whatsappBtn).getPropertyValue("--edge-gap");
+      const value = parseFloat(raw);
+      return Number.isFinite(value) ? value : 24;
+    };
+
+    // Snap discret sur la grille “responsive gap” pour éviter un positionnement “au millimètre”
+    const snapToGap = (value, gap) => {
+      if (!gap) return value;
+      return Math.round(value / gap) * gap;
+    };
+
+    const computeEdgeGap = () => {
+      const gap = getEdgeGap();
+      // Sur tout écran : on force un gap “réel” dans [20..30]
+      return Math.max(20, Math.min(30, gap));
+    };
+
+    const applyPosition = (left, top, edgeGap) => {
+      const btnWidth = whatsappBtn.offsetWidth;
+      const btnHeight = whatsappBtn.offsetHeight;
+
+      // Clamp (cohérent avec le gap)
+      const clampedLeft = Math.max(edgeGap, Math.min(window.innerWidth - btnWidth - edgeGap, left));
+      const clampedTop = Math.max(edgeGap, Math.min(window.innerHeight - btnHeight - edgeGap, top));
+
+      whatsappBtn.style.left = clampedLeft + "px";
+      whatsappBtn.style.top = clampedTop + "px";
+      whatsappBtn.style.right = "auto";
+      whatsappBtn.style.bottom = "auto";
+    };
+
+    const onDragMove = (e) => {
+      if (!isDragging) return;
+      e.preventDefault();
+
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+      const dx = clientX - startX;
+      const dy = clientY - startY;
+
+      let newLeft = initialLeft + dx;
+      let newTop = initialTop + dy;
+
+      const edgeGap = computeEdgeGap();
+      // Pendant le drag : clamp seulement (snap final à la fin)
+      applyPosition(newLeft, newTop, edgeGap);
+    };
+
+    const onDragEnd = () => {
+      if (!isDragging) return;
+      isDragging = false;
+      whatsappBtn.classList.remove("dragging");
+      document.body.style.userSelect = "";
+
+      const edgeGap = computeEdgeGap();
+      const rect = whatsappBtn.getBoundingClientRect();
+
+      let left = rect.left;
+      let top = rect.top;
+
+      // Snap discret basé sur le gap (20–30)
+      left = snapToGap(left, edgeGap);
+      top = snapToGap(top, edgeGap);
+
+      applyPosition(left, top, edgeGap);
+    };
+
+    whatsappBtn.addEventListener("mousedown", onDragStart);
+    document.addEventListener("mousemove", onDragMove);
+    document.addEventListener("mouseup", onDragEnd);
+
+    whatsappBtn.addEventListener("touchstart", onDragStart, { passive: false });
+    document.addEventListener("touchmove", onDragMove, { passive: false });
+    document.addEventListener("touchend", onDragEnd);
+
+    whatsappBtn.addEventListener("click", function (e) {
+      if (isDragging) e.preventDefault();
+    });
+  }
+
+  // ========== 7. CHATBOT ========== 
+  const chatBubble = document.getElementById("chat-bubble");
+  const chatWindow = document.getElementById("chat-window");
+  const chatClose = document.getElementById("chat-close");
+  const chatMessages = document.getElementById("chat-messages");
+  const chatInput = document.getElementById("chat-input");
+  const chatSend = document.getElementById("chat-send");
+
+  if (chatBubble && chatWindow && chatClose && chatMessages && chatInput && chatSend) {
+    // ========== Intelligence chatbot (bases + matching contextuel) ==========
+    const normalizeText = (text) => {
+      return (text || "")
+        .toString()
+        .trim()
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9\s+@._-]/gi, " ")
+        .replace(/\s+/g, " ");
+    };
+
+    const knowledgeBase = [
+      {
+        id: "horaires",
+        patterns: [/(heure|horaires|ouverture|fermeture|disponibilite|disponibilit)/i],
+        answer: "Nous sommes disponibles du lundi au samedi, de 8h à 19h. Les séances se font sur rendez-vous.",
+      },
+      {
+        id: "tarifs",
+        patterns: [/(tarif|prix|cout|devis|budget|combien)/i],
+        answer:
+          "Nos tarifs varient selon le projet (mariage, événementiel, studio). Dites-moi le type de prestation + la date, et je vous guide pour obtenir un devis.",
+      },
+      {
+        id: "contact",
+        patterns: [/(contact|telephone|tel|appeler|email|joindre)/i],
+        answer:
+          "Vous pouvez nous joindre au +225 07 79 34 80 64 (WhatsApp ou appel) ou passer par le formulaire de contact sur le site.",
+      },
+      {
+        id: "delais",
+        patterns: [/(livraison|delai|delais|retouche|retouch|delai de livraison)/i],
+        answer: "Nous livrons les photos retouchées sous 48h ouvrées après l’événement.",
+      },
+      {
+        id: "annulation",
+        patterns: [/(annulation|remboursement|retour|resilier)/i],
+        answer: "Les conditions d’annulation et de remboursement sont précisées dans le contrat. N’hésitez pas à nous écrire.",
+      },
+      {
+        id: "mariage",
+        patterns: [/(mariage|noce|traditionnel|traditionnelle|noces)/i],
+        answer:
+          "Nous couvrons tous types de mariages (civil, religieux, traditionnel) avec une approche artistique unique.",
+      },
+      {
+        id: "studio",
+        patterns: [/(studio|seance photo|seance|portrait|book|marque)/i],
+        answer:
+          "Nous disposons d’un studio équipé pour des portraits professionnels, photos de marque ou book.",
+      },
+      {
+        id: "evenement",
+        patterns: [/(evenement|evenementiel|conference|concert|festival|can|femua|primud)/i],
+        answer:
+          "Couverture événementielle : CAN, FEMUA, PRIMUD… Nous sommes habitués aux grands rendez-vous.",
+      },
+      {
+        id: "materiel",
+        patterns: [/(materiel|appareil|boitier|boit|optique|objectif|camera)/i],
+        answer:
+          "Nous utilisons des boîtiers hybrides dernière génération et un parc optique complet.",
+      },
+      {
+        id: "agence",
+        patterns: [/(partenaire|collaboration|agence|shoot by tik tak|1xbet|caf)/i],
+        answer:
+          "Shoot By Tik Tak Agency est partenaire de marques comme 1xBet, CAF, et bien d’autres.",
+      },
+    ];
+
+    const findBestMatch = (message) => {
+      const raw = (message || "").toString();
+      const msg = normalizeText(raw);
+
+      // Score : pattern match (fort) + mots-clés (léger)
+      let best = { score: 0, answer: null, id: null };
+
+      for (const item of knowledgeBase) {
+        let score = 0;
+        for (const pattern of item.patterns) {
+          if (pattern.test(raw) || pattern.test(msg)) score += 70;
+        }
+
+        // Boost via mots-clés (fallback)
+        const keywords = item.id === "horaires" ? ["horaire", "heure", "ouverture", "fermeture"] : [];
+        // (On garde volontairement léger pour éviter les faux positifs)
+        score += keywords.some((k) => msg.includes(normalizeText(k))) ? 10 : 0;
+
+        if (score > best.score) {
+          best = { score, answer: item.answer, id: item.id };
+        }
+      }
+
+      // Seuil d’acceptation
+      if (best.score >= 50 && best.answer) return { answer: best.answer, id: best.id };
+
+      return {
+        answer:
+          "Je suis en train de vous répondre, mais je n’ai pas trouvé de correspondance exacte. Pouvez-vous préciser : (1) Horaires / (2) Tarifs / (3) Services ?",
+        id: "fallback",
+      };
+    };
+
+    const quickActions = [
+      "Horaires",
+      "Tarifs",
+      "Services (mariage / studio / événement)",
+      "Délais de livraison",
+      "Contact",
+    ];
+
+    const generateContextualIntro = () => {
+      return "Bonjour ! Je peux vous aider sur : Horaires, Tarifs, Services (mariage/studio/événement), Délais de livraison et Contact.";
+    };
+
+    const findAnswer = (message) => {
+      const { answer } = findBestMatch(message);
+      return answer;
+    };
+
+
+    const addMessage = (text, sender) => {
+      const msgDiv = document.createElement("div");
+      msgDiv.className = "message " + sender;
+      msgDiv.textContent = text;
+      chatMessages.appendChild(msgDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      return msgDiv;
+    };
+
+    const showTypingIndicator = () => {
+      const typingDiv = document.createElement("div");
+      typingDiv.className = "typing-indicator";
+      for (let i = 0; i < 3; i++) {
+        typingDiv.appendChild(document.createElement("span"));
+      }
+      chatMessages.appendChild(typingDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      return typingDiv;
+    };
+
+    const removeTypingIndicator = (indicator) => {
+      if (indicator) indicator.remove();
+    };
+
+    const renderQuickActions = () => {
+      const actions = quickActions;
+      const container = document.createElement("div");
+      container.className = "chat-quick-actions";
+
+      for (const label of actions) {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "chat-quick-action";
+        btn.textContent = label;
+        btn.addEventListener("click", () => {
+          processUserMessage(label);
+        });
+        container.appendChild(btn);
+      }
+
+      // Dernier message d'accueil/ fallback (ne pas spam si déjà présent)
+      const existing = chatMessages.querySelector(".chat-quick-actions");
+      if (existing) existing.remove();
+      chatMessages.appendChild(container);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    };
+
+    const processUserMessage = (text) => {
+      addMessage(text, "user");
+      const typing = showTypingIndicator();
+      const delay = 650 + Math.random() * 650;
+
+      setTimeout(() => {
+        removeTypingIndicator(typing);
+
+        let answer;
+        try {
+          answer = findAnswer(text);
+        } catch (err) {
+          console.error("Chatbot error:", err);
+          answer = "Désolé, je n’arrive pas à traiter votre demande. Réessayez ou choisissez une option ci-dessous.";
+        }
+
+        addMessage(answer, "bot");
+
+        // Si fallback (ou erreur), proposer des actions
+        if (answer && (answer.includes("Pouvez-vous préciser") || answer.includes("Réessayez"))) {
+          renderQuickActions();
+        }
+      }, delay);
+    };
+
+
+    // Message d'accueil contextuel + quick actions
+    addMessage(generateContextualIntro(), "bot");
+    renderQuickActions();
+
+
+    const setChatOpen = (open) => {
+      chatWindow.classList.toggle("active", open);
+      chatBubble.setAttribute("aria-expanded", String(open));
+      // Accessibilité : quand on ferme, on retire le focus du panel
+      if (!open) chatWindow.blur();
+    };
+
+    chatBubble.addEventListener("click", () => {
+      const isOpen = chatWindow.classList.contains("active");
+      setChatOpen(!isOpen);
+    });
+
+    chatClose.addEventListener("click", () => {
+      setChatOpen(false);
+    });
+
+
+    chatSend.addEventListener("click", () => {
+      const text = chatInput.value.trim();
+      if (text) {
+        processUserMessage(text);
+        chatInput.value = "";
+      }
+    });
+
+    chatInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        chatSend.click();
+      }
+    });
+  }
+
+    // ========== 8. FOND DE PARTICULES ANIMÉ (canvas) ==========
+    const prefersReducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const canvas = document.getElementById("particles-canvas");
+
+  if (canvas) {
+    const ctx = canvas.getContext("2d");
+    let rafId = 0;
+
+    const particles = [];
+    // Sur mobile / faible perf / reduced-motion, on baisse la charge.
+    const maxParticles = prefersReducedMotion ? 30 : 80;
+
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+
+    class Particle {
+      constructor() {
+        // En cas de réduction des animations, on garde une particule “plus calme”.
         this.reset();
-        button.textContent = originalText;
-        gsap.to(button, {
-            backgroundColor: 'var(--or-mat)',
-            duration: 0.4
-        });
-    }, 2000);
-});
+      }
 
-// --- ANIMATIONS SUPPLÉMENTAIRES ---
-// Animation des cartes expertise au scroll
-gsap.utils.toArray(".exp-card").forEach((card, index) => {
-    gsap.from(card, {
-        scrollTrigger: {
-            trigger: card,
-            start: "top 85%",
-            toggleActions: "play none none none"
-        },
-        y: 40,
-        opacity: 0,
-        duration: 0.8,
-        delay: index * 0.1,
-        ease: "power2.out"
-    });
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2 + 0.5;
+        this.speedX = Math.random() * 0.5 - 0.25;
+        this.speedY = Math.random() * 0.5 - 0.25;
+      }
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (
+          this.x < 0 ||
+          this.x > canvas.width ||
+          this.y < 0 ||
+          this.y > canvas.height
+        ) {
+          this.reset();
+        }
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(196, 164, 132, 0.6)";
+        ctx.fill();
+      }
+    }
 
-    // Hover effect
-    card.addEventListener('mouseenter', function() {
-        gsap.to(this, {
-            y: -10,
-            boxShadow: '0 20px 40px rgba(196, 164, 132, 0.3)',
-            duration: 0.4
-        });
-    });
+    resize();
 
-    card.addEventListener('mouseleave', function() {
-        gsap.to(this, {
-            y: 0,
-            boxShadow: 'none',
-            duration: 0.4
-        });
-    });
-});
+    for (let i = 0; i < maxParticles; i++) {
+      particles.push(new Particle());
+    }
 
-// Animation des panneaux de galerie
-gsap.utils.toArray(".gallery-panel").forEach(panel => {
-    gsap.from(panel, {
-        scrollTrigger: {
-            trigger: panel,
-            start: "left 80%",
-            toggleActions: "play none none none"
-        },
-        opacity: 0,
-        x: -50,
-        duration: 0.6,
-        ease: "power2.out"
-    });
-});
+    const animate = () => {
+      if (prefersReducedMotion) {
+        // On évite l’animation en boucle lourde si l’utilisateur le demande.
+        return;
+      }
 
-// Effet parallax sur les images de la section narrative
-const imageRevealBox = document.querySelector('.image-reveal-box');
-if (imageRevealBox) {
-    gsap.to(imageRevealBox, {
-        scrollTrigger: {
-            trigger: imageRevealBox,
-            start: "top center",
-            end: "bottom center",
-            scrub: 1,
-            markers: false
-        },
-        scale: 1.05,
-        ease: "none"
-    });
-}
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (const p of particles) {
+        p.update();
+        p.draw();
+      }
+      rafId = requestAnimationFrame(animate);
+    };
+
+    if (!prefersReducedMotion) {
+      animate();
+    }
+
+
+    window.addEventListener("resize", resize);
+
+    // cleanup volontaire non nécessaire sur page static, mais on évite de laisser du state inutile
+    // (aucun stop requis pour GitHub Pages)
+    void rafId;
+  }
+})();
+
