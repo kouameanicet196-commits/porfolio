@@ -1,139 +1,247 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Serge Anicet Kouame | L'Art du Regard</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,900;1,400&family=Montserrat:wght@200;400;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body> 
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Serge Anicet Kouame | L'Art du Regard</title>
 
-    <div id="catalog-overlay">
-        <div class="close-btn" onclick="toggleCatalog()">[ FERMER ]</div>
-        <h2 style="font-family: 'Playfair Display'; font-size: 3rem; text-align: center; color: var(--or-mat);">CATALOGUE</h2>
-        <div class="catalog-grid">
-            <a href="https://wa.me/c/22579348064" target="_blank" class="catalog-link"></a>
-        </div>
+  <!-- Polices Google -->
+  <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,900;1,400&family=Montserrat:wght@200;400;700&display=swap" rel="stylesheet" />
+
+  <!-- GSAP & ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+  <!-- AOS -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <!-- CANVAS POUR PARTICULES (arrière-plan) -->
+  <canvas id="particles-canvas"></canvas>
+
+  <!-- CATALOGUE OVERLAY -->
+  <div id="catalog-overlay" aria-hidden="true">
+    <div class="close-btn" id="catalog-close">[ FERMER ]</div>
+    <h2 style="font-family: 'Playfair Display'; font-size: 3rem; text-align: center; color: var(--or-mat);">CATALOGUE</h2>
+    <div class="catalog-grid">
+      <a href="https://wa.me/c/22579348064" target="_blank" class="catalog-link"></a>
+    </div>
+  </div>
+
+
+  <!-- CURSEUR -->
+  <div id="cursor"></div>
+  <div id="cursor-follower"></div>
+
+  <!-- PRELOADER -->
+  <div id="loader">
+    <div class="loader-spinner"></div>
+    <span>L'ART DU REGARD</span>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero" data-aos="fade-in">
+    <div class="floating-img-space" style="top: 10%; left: 5%;" data-speed="1.2">
+      <img src="IMG_0045.jpg" style="width:100%; height:100%; object-fit:cover;" />
+    </div>
+    <div class="floating-img-space" style="bottom: 10%; right: 5%;" data-speed="1.5">
+      <img src="P1563672-Modifier.jpg" style="width:100%; height:100%; object-fit:cover;" />
+    </div>
+    <div class="floating-img-space" style="top: 15%; right: 15%; width: 180px; height: 250px;" data-speed="2">
+      <img src="IMG_0977.jpeg" style="width:100%; height:100%; object-fit:cover;" />
     </div>
 
-    <div id="cursor"></div>
-    <div id="cursor-follower"></div>
-    <div id="loader">L'ART DU REGARD</div> 
+    <div class="hero-title">
+      <span class="reveal-text">L'instantané devient</span>
+      <div class="reveal-text">ÉTERNEL</div>
+    </div>
+  </section>
 
-    <section class="hero">
-        <div class="floating-img-space" style="top: 10%; left: 5%;" data-speed="1.2"> <img src="IMG_0045.jpg" style="width:100%; height:100%; object-fit:cover;"> </div>
-        <div class="floating-img-space" style="bottom: 10%; right: 5%;" data-speed="1.5"><img src="P1563672-Modifier.jpg" style="width:100%; height:100%; object-fit:cover;"></div>
-        <div class="floating-img-space" style="top: 15%; right: 15%; width: 180px; height: 250px;" data-speed="2"><img src="IMG_0977.jpeg" style="width:100%; height:100%; object-fit:cover;"></div>
-        
-        <div class="hero-title">
-            <span class="reveal-text">L'instantané devient</span>
-            <div class="reveal-text">ÉTERNEL</div>
+  <!-- NARRATIVE -->
+  <section class="narrative" data-aos="fade-up">
+    <div class="narrative-content">
+      <h2>Plus qu'un photographe, un témoin de l'histoire.</h2>
+      <p>
+        Avec plus de 5 ans d'expérience sur les terrains les plus exigeants de Côte d'Ivoire — de la ferveur de la <strong>CAN 2024</strong> à l'élégance des mariages de luxe — j'ai appris que la technique ne suffit pas.
+      </p>
+      <p>
+        Mon rôle est d'anticiper l'émotion. En tant que <strong>Directeur de la Photographie</strong> chez Shoot By Tik Tak Agency, je ne livre pas seulement des fichiers, je bâtis des héritages visuels.
+      </p>
+      <div style="margin-top: 40px; font-weight: 700; color: var(--accent-ocre); letter-spacing: 4px; font-size: 0.9rem;">
+        PROFIL ACCRÉDITÉ CAF & EXPERT POST-PRODUCTION
+      </div>
+    </div>
+
+    <div class="image-reveal-box anim-reveal" data-aos="zoom-in-left">
+      <div class="img-slot">
+        <img src="profil.jpg" style="width:100%; height:100%; object-fit:cover; object-position: 10% 20%;" />
+      </div>
+    </div>
+  </section>
+
+  <!-- GALERIE HORIZONTALE -->
+  <section class="horizontal-gallery-wrapper" data-aos="fade-up">
+    <div class="horizontal-gallery">
+      <div class="gallery-strip">
+        <div class="gallery-panel">
+          <div class="img-slot">
+            <img src="IMG_1901.PNG" style="width:100%; height:100%; object-fit:cover;" />
+          </div>
+          <div class="panel-desc"><h3>ADRÉNALINE</h3><p>Couverture officielle CAN 2024</p></div>
         </div>
-    </section> 
 
-    <section class="narrative">
-        <div class="narrative-content">
-            <h2 class="anim-fade">Plus qu'un photographe, un témoin de l'histoire.</h2>
-            <p class="anim-fade">
-                Avec plus de 5 ans d'expérience sur les terrains les plus exigeants de Côte d'Ivoire — de la ferveur de la <strong>CAN 2024</strong> à l'élégance des mariages de luxe — j'ai appris que la technique ne suffit pas.
-            </p>
-            <p class="anim-fade">
-                Mon rôle est d'anticiper l'émotion. En tant que <strong>Directeur de la Photographie</strong> chez Shoot By Tik Tak Agency, je ne livre pas seulement des fichiers, je bâtis des héritages visuels.
-            </p>
-            <div class="anim-fade" style="margin-top: 40px; font-weight: 700; color: var(--accent-ocre); letter-spacing: 4px; font-size: 0.9rem;">
-                PROFIL ACCRÉDITÉ CAF & EXPERT POST-PRODUCTION
-            </div>
+        <div class="gallery-panel">
+          <div class="img-slot">
+            <img src="IMG_1908.PNG" style="width:100%; height:100%; object-fit:cover; object-position: center 10%;" />
+          </div>
+          <div class="panel-desc"><h3>VIBRATION</h3><p>FEMUA, PRIMUD & Scènes Événementielles</p></div>
         </div>
-        <div class="image-reveal-box anim-reveal">
-            <div class="img-slot"><img src="profil.jpg" style="width:100%; height:100%; object-fit:cover; object-position: 10% 20%;"></div>
+
+        <div class="gallery-panel">
+          <div class="img-slot">
+            <img src="001 (20).jpg" style="width:100%; height:100%; object-fit:cover;" />
+          </div>
+          <div class="panel-desc"><h3>ÉTERNITÉ</h3><p>Mariages Traditionnels & Modernes</p></div>
         </div>
-    </section> 
 
-    <section class="horizontal-gallery-wrapper">
-        <div class="horizontal-gallery">
-            <div class="gallery-strip">
-                <div class="gallery-panel">
-                    <div class="img-slot"><img src="IMG_1901.PNG" style="width:100%; height:100%; object-fit:cover;"></div>
-                    <div class="panel-desc"><h3>ADRÉNALINE</h3><p>Couverture officielle CAN 2024</p></div>
-                </div>
-                <div class="gallery-panel">
-                    <div class="img-slot"><img src="IMG_1908.PNG" style="width:100%; height:100%; object-fit:cover; object-position: center 10%;"></div>
-                    <div class="panel-desc"><h3>VIBRATION</h3><p>FEMUA, PRIMUD & Scènes Événementielles</p></div>
-                </div>
-                <div class="gallery-panel">
-                    <div class="img-slot"><img src="001 (20).jpg" style="width:100%; height:100%; object-fit:cover;"></div>
-                    <div class="panel-desc"><h3>ÉTERNITÉ</h3><p>Mariages Traditionnels & Modernes</p></div>
-                </div>
-                <div class="gallery-panel">
-                    <div class="img-slot"><img src="IMG_1905.PNG" style="width:100%; height:100%; object-fit:cover; object-position: 10% 10%;"></div>
-                    <div class="panel-desc">
-                        <h3>PRESTIGE</h3>
-                        <p>Studio & Branding Entreprise</p>
-                        <div class="btn-catalog-trigger" onclick="toggleCatalog()">VOIR LE CATALOGUE</div>
-                    </div>
-                </div>
-            </div>
+        <div class="gallery-panel">
+          <div class="img-slot">
+            <img src="IMG_1905.PNG" style="width:100%; height:100%; object-fit:cover; object-position: 10% 10%;" />
+          </div>
+          <div class="panel-desc">
+            <h3>PRESTIGE</h3>
+            <p>Studio & Branding Entreprise</p>
+            <div class="btn-catalog-trigger" data-action="open-catalog">VOIR LE CATALOGUE</div>
+
+          </div>
         </div>
-    </section> 
+      </div>
+    </div>
+  </section>
 
-    <section class="expertise">
-        <h2 style="font-family: 'Playfair Display'; font-size: 5rem; text-align: left; line-height: 0.8; margin-bottom: 50px;" class="anim-fade">EXPERTISE<br><span style="font-size: 2rem; color: var(--accent-ocre)">ET VISION</span></h2>
-        <div class="grid-expertise">
-            <div class="exp-card">
-                <h3>Vitesse & Précision</h3>
-                <p>Livraison des images retouchées sous 48 heures.</p>
-            </div>
-            <div class="exp-card">
-                <h3>Matériel de Pointe</h3>
-                <p>Utilisation des boîtiers dernière génération.</p>
-            </div>
-            <div class="exp-card">
-                <h3>Direction Artistique</h3>
-                <p>Je gère vos projets de A à Z.</p>
-            </div>
-            <div class="exp-card">
-                <h3>Réseau & Partenariat</h3>
-                <p>Partenaire de confiance (1xbet, CAF).</p>
-            </div>
+  <!-- EXPERTISE -->
+  <section class="expertise" data-aos="fade-up">
+    <h2 style="font-family: 'Playfair Display'; font-size: 5rem; text-align: left; line-height: 0.8; margin-bottom: 50px;">
+      EXPERTISE<br /><span style="font-size: 2rem; color: var(--accent-ocre)">ET VISION</span>
+    </h2>
+
+    <div class="grid-expertise">
+      <div class="exp-card" data-aos="zoom-in"><h3>Vitesse & Précision</h3><p>Livraison des images retouchées sous 48 heures.</p></div>
+      <div class="exp-card" data-aos="zoom-in"><h3>Matériel de Pointe</h3><p>Utilisation des boîtiers dernière génération.</p></div>
+      <div class="exp-card" data-aos="zoom-in"><h3>Direction Artistique</h3><p>Je gère vos projets de A à Z.</p></div>
+      <div class="exp-card" data-aos="zoom-in"><h3>Réseau & Partenariat</h3><p>Partenaire de confiance (1xbet, CAF).</p></div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="contact" data-aos="fade-up">
+    <h2>CONTACTEZ-MOI</h2>
+    <p class="contact-subtitle">Partagez votre projet avec moi - je vous répondrai rapidement</p>
+
+    <form id="contact-form" class="contact-form" novalidate>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="name">Nom Complet</label>
+          <input type="text" id="name" name="name" placeholder="Votre nom" required />
+          <span class="form-error" id="name-error"></span>
         </div>
-    </section> 
 
-    <section class="contact">
-        <h2 class="anim-fade">CONTACTEZ-MOI</h2>
-        <form id="contact-form" class="contact-form">
-            <div class="form-group">
-                <input type="text" id="name" name="name" placeholder="Votre nom" required>
-            </div>
-            <div class="form-group">
-                <input type="email" id="email" name="email" placeholder="Votre email" required>
-            </div>
-            <div class="form-group">
-                <textarea id="message" name="message" placeholder="Votre message" required></textarea>
-            </div>
-            <button type="submit" class="btn-submit">ENVOYER</button>
-        </form>
-    </section> 
-
-    <footer>
-        <div class="footer-logo">S.A. KOUAME</div>
-        <div class="footer-content">
-            <p style="letter-spacing: 5px; margin-bottom: 10px; opacity: 0.5;">ABIDJAN, CÔTE d'IVOIRE</p>
-            <p style="font-size: 1.5rem; font-weight: 200;">+225 07 79 34 80 64</p>
-            <div class="footer-signature">Serge Anicet Kouamé</div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="votre@email.com" required />
+          <span class="form-error" id="email-error"></span>
         </div>
-    </footer> 
+      </div>
 
-    <a href="https://wa.me/2250779348064" target="_blank" class="whatsapp-float">
-        <img src="https://img.icons8.com/color/48/000000/whatsapp.png" alt="WhatsApp">
-    </a>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="phone">Téléphone</label>
+          <input type="tel" id="phone" name="phone" placeholder="+225 07 XX XX XX XX" />
+          <span class="form-error" id="phone-error"></span>
+        </div>
 
-    <script src="script.js"></script>
+        <div class="form-group">
+          <label for="subject">Sujet</label>
+          <select id="subject" name="subject" required>
+            <option value="">Sélectionnez un sujet</option>
+            <option value="photography">Photographie</option>
+            <option value="event">Événement</option>
+            <option value="studio">Séance Studio</option>
+            <option value="other">Autre</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group full-width">
+        <label for="message">Message</label>
+        <textarea id="message" name="message" placeholder="Décrivez votre projet..." required></textarea>
+        <span class="form-error" id="message-error"></span>
+      </div>
+
+      <div class="form-footer">
+        <button type="submit" class="btn-submit">
+          <span class="btn-text">ENVOYER LE MESSAGE</span>
+          <span class="btn-loader"></span>
+        </button>
+        <span class="form-success" id="form-success">✓ Message envoyé avec succès!</span>
+      </div>
+    </form>
+  </section>
+
+  <!-- FOOTER -->
+  <footer data-aos="fade-in">
+    <div class="footer-logo">S.A. KOUAME</div>
+    <div class="footer-content">
+      <p style="letter-spacing: 5px; margin-bottom: 10px; opacity: 0.5;">ABIDJAN, CÔTE d'IVOIRE</p>
+      <p style="font-size: 1.5rem; font-weight: 200;">+225 07 79 34 80 64</p>
+      <div class="footer-signature">Serge Anicet Kouamé</div>
+    </div>
+  </footer>
+
+  <!-- BOUTON WHATSAPP FLOTTANT (déplaçable) -->
+  <a href="https://wa.me/2250779348064" class="whatsapp-float" id="whatsapp-float" title="Contactez-moi sur WhatsApp" aria-label="Contacter via WhatsApp">
+    <div class="whatsapp-tooltip">Contactez-moi!</div>
+    <!-- Icône WhatsApp (SVG officiel classique) -->
+    <svg class="whatsapp-icon" viewBox="0 0 32 32" aria-hidden="true">
+      <path fill="currentColor" d="M19.07 16.2c-.15-.08-.91-.44-1.06-.5-.15-.05-.25-.08-.35.08-.1.15-.4.5-.49.6-.1.1-.2.12-.35.05-1.55-.62-2.57-2.15-2.67-2.3-.08-.15 0-.23.07-.3.07-.07.15-.2.23-.3.08-.1.1-.17.15-.27.05-.1.02-.18-.02-.25-.05-.08-.35-.93-.48-1.27-.13-.34-.26-.29-.35-.29-.1-.01-.2-.01-.3-.01-.1 0-.25.04-.38.18-.13.15-.5.5-.5 1.22s.52 1.42.6 1.52c.08.1 1.02 1.56 2.48 2.18.35.15.62.24.83.31.35.11.67.09.93.05.28-.04.91-.37 1.04-.72.13-.35.13-.65.1-.72-.03-.07-.12-.11-.27-.19Zm-3.07 7.86c-1.15 0-2.27-.3-3.25-.87l-2.9.95.98-2.84a8 8 0 0 1-.96-3.91c0-4.41 3.66-7.98 8.16-7.98s8.16 3.57 8.16 7.98c0 4.41-3.66 7.98-8.16 7.98Zm9.34-3.05-.02-.06a7.9 7.9 0 0 0-1.08-2.4c-.1-.17-.22-.34-.36-.5l-.1-.12c-.09-.1-.15-.16-.2-.18a7.9 7.9 0 0 0-1.74-.53c-.08-.02-.16-.02-.22.03-.06.05-.08.12-.09.2-.03.2-.1.36-.22.5-.15.18-.29.25-.51.2-.15-.03-.3-.08-.45-.14-1.09-.44-2.01-1.24-2.57-2.27-.1-.19-.17-.34-.15-.49.02-.15.12-.3.25-.45.12-.14.17-.3.13-.46-.05-.18-.1-.35-.15-.52-.11-.35-.2-.63-.37-.75-.07-.05-.17-.08-.27-.08-.12 0-.24.02-.35.05-.1.03-.2.07-.28.14-.2.18-.35.4-.46.67-.18.42-.22.9-.12 1.33.15.65.48 1.26.96 1.86.7.9 1.62 1.63 2.7 2.1.62.27 1.25.44 1.86.48.27.02.55 0 .82-.06.3-.07.58-.2.81-.38.23-.18.4-.4.52-.67.1-.23.14-.48.14-.7 0-.17-.02-.34-.07-.5Z"/>
+    </svg>
+  </a>
+
+
+  <!-- CHAT WIDGET -->
+  <div class="chat-widget" id="chat-widget">
+    <button class="chat-bubble" id="chat-bubble" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="chat-window" title="Ouvrir le chat">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+    </button>
+
+    <div class="chat-window" id="chat-window" role="dialog" aria-modal="false" aria-label="Assistant" tabindex="-1">
+      <div class="chat-header">
+        <span>Assistant</span>
+        <button class="chat-close" id="chat-close" type="button" aria-label="Fermer le chat">&times;</button>
+      </div>
+
+      <div class="chat-messages" id="chat-messages" aria-live="polite">
+        <div class="message bot">Bonjour ! Posez-moi une question, je vous répondrai instantanément.</div>
+      </div>
+
+      <div class="chat-input-area">
+        <input type="text" id="chat-input" placeholder="Votre message..." autocomplete="off" />
+        <button id="chat-send" type="button" aria-label="Envoyer">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="var(--marron-noir)" aria-hidden="true"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- SCRIPTS -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script defer src="script.js"></script>
 </body>
 </html>
-</body>
-</html>
+
+
 
