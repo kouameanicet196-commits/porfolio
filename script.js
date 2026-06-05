@@ -1,4 +1,4 @@
--(function () {
+(function () {
   "use strict";
 
   // ========== 0. INITIALISATION AOS (animations au scroll) ==========
@@ -60,11 +60,9 @@
     catalogCloseBtn.addEventListener("click", () => setCatalogOpen(false));
   }
 
-  // Expose pour compat arrière-plan si un clic inline existe encore quelque part
   window.toggleCatalog = toggleCatalog;
 
   // ========== 4. GSAP ANIMATIONS (galerie horizontale) ==========
-
   if (window.gsap && window.ScrollTrigger) {
     try {
       window.gsap.registerPlugin(window.ScrollTrigger);
@@ -76,8 +74,6 @@
             window.matchMedia &&
             window.matchMedia("(max-width: 768px)").matches;
 
-          // Ultra responsive: sur mobile, on évite le pin/transform GSAP.
-          // Le CSS gère déjà la version “stack vertical”.
           if (!isMobile) {
             window.gsap.to(strip, {
               x: () => -(strip.scrollWidth - window.innerWidth),
@@ -96,11 +92,9 @@
         }
       }
     } catch (err) {
-      // Silencieux : on évite de casser la page si GSAP/ScrollTrigger échoue.
       console.warn("GSAP init failed", err);
     }
   }
-
 
   // ========== 5. FORMULAIRE DE CONTACT (validation + simulation) ==========
   const contactForm = document.getElementById("contact-form");
@@ -157,9 +151,7 @@
     function validateSubject() {
       const err = document.getElementById("subject-error");
       if (!subjectSelect) return false;
-      if (!err) {
-        return subjectSelect.value !== "";
-      }
+      if (!err) return subjectSelect.value !== "";
       if (subjectSelect.value === "") {
         showError(subjectSelect, err, "Veuillez choisir un sujet");
         return false;
@@ -211,18 +203,21 @@
     });
   }
 
-  // ========== 6. BOUTON WHATSAPP DÉPLAÇABLE ========== 
+  // ========== 6. BOUTON WHATSAPP DÉPLAÇABLE ==========
   const whatsappBtn = document.getElementById("whatsapp-float");
   if (whatsappBtn) {
     let isDragging = false;
+    let moved = false;
     let startX = 0;
     let startY = 0;
     let initialLeft = 0;
     let initialTop = 0;
 
+    const DRAG_THRESHOLD_PX = 8;
+
     const onDragStart = (e) => {
-      e.preventDefault();
       isDragging = true;
+      moved = false;
       whatsappBtn.classList.add("dragging");
 
       const clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -243,7 +238,6 @@
       return Number.isFinite(value) ? value : 24;
     };
 
-    // Snap discret sur la grille “responsive gap” pour éviter un positionnement “au millimètre”
     const snapToGap = (value, gap) => {
       if (!gap) return value;
       return Math.round(value / gap) * gap;
@@ -251,7 +245,6 @@
 
     const computeEdgeGap = () => {
       const gap = getEdgeGap();
-      // Sur tout écran : on force un gap “réel” dans [20..30]
       return Math.max(20, Math.min(30, gap));
     };
 
@@ -259,7 +252,6 @@
       const btnWidth = whatsappBtn.offsetWidth;
       const btnHeight = whatsappBtn.offsetHeight;
 
-      // Clamp (cohérent avec le gap)
       const clampedLeft = Math.max(edgeGap, Math.min(window.innerWidth - btnWidth - edgeGap, left));
       const clampedTop = Math.max(edgeGap, Math.min(window.innerHeight - btnHeight - edgeGap, top));
 
@@ -279,11 +271,10 @@
       const dx = clientX - startX;
       const dy = clientY - startY;
 
-      let newLeft = initialLeft + dx;
-      let newTop = initialTop + dy;
+      const newLeft = initialLeft + dx;
+      const newTop = initialTop + dy;
 
       const edgeGap = computeEdgeGap();
-      // Pendant le drag : clamp seulement (snap final à la fin)
       applyPosition(newLeft, newTop, edgeGap);
     };
 
@@ -299,27 +290,43 @@
       let left = rect.left;
       let top = rect.top;
 
-      // Snap discret basé sur le gap (20–30)
       left = snapToGap(left, edgeGap);
       top = snapToGap(top, edgeGap);
 
       applyPosition(left, top, edgeGap);
     };
 
+    // Moved detection for tap vs drag (mobile)
+    let movedDuringGesture = false;
+    const markMovedIfNeeded = () => {
+      const rect = whatsappBtn.getBoundingClientRect();
+      movedDuringGesture = moved ||
+        Math.abs(rect.left - initialLeft) > DRAG_THRESHOLD_PX ||
+        Math.abs(rect.top - initialTop) > DRAG_THRESHOLD_PX;
+    };
+
     whatsappBtn.addEventListener("mousedown", onDragStart);
-    document.addEventListener("mousemove", onDragMove);
-    document.addEventListener("mouseup", onDragEnd);
+    document.addEventListener("mousemove", (e) => {
+      markMovedIfNeeded();
+      onDragMove(e);
+    });
+    document.addEventListener("mouseup", () => {
+      onDragEnd();
+    });
 
     whatsappBtn.addEventListener("touchstart", onDragStart, { passive: false });
-    document.addEventListener("touchmove", onDragMove, { passive: false });
+    document.addEventListener("touchmove", (e) => {
+      markMovedIfNeeded();
+      onDragMove(e);
+    }, { passive: false });
     document.addEventListener("touchend", onDragEnd);
 
     whatsappBtn.addEventListener("click", function (e) {
-      if (isDragging) e.preventDefault();
+      if (movedDuringGesture) e.preventDefault();
     });
   }
 
-  // ========== 7. CHATBOT ========== 
+  // ========== 7. CHATBOT ==========
   const chatBubble = document.getElementById("chat-bubble");
   const chatWindow = document.getElementById("chat-window");
   const chatClose = document.getElementById("chat-close");
@@ -328,7 +335,6 @@
   const chatSend = document.getElementById("chat-send");
 
   if (chatBubble && chatWindow && chatClose && chatMessages && chatInput && chatSend) {
-    // ========== Intelligence chatbot (bases + matching contextuel) ==========
     const normalizeText = (text) => {
       return (text || "")
         .toString()
@@ -404,7 +410,6 @@
       const raw = (message || "").toString();
       const msg = normalizeText(raw);
 
-      // Score : pattern match (fort) + mots-clés (léger)
       let best = { score: 0, answer: null, id: null };
 
       for (const item of knowledgeBase) {
@@ -413,9 +418,7 @@
           if (pattern.test(raw) || pattern.test(msg)) score += 70;
         }
 
-        // Boost via mots-clés (fallback)
         const keywords = item.id === "horaires" ? ["horaire", "heure", "ouverture", "fermeture"] : [];
-        // (On garde volontairement léger pour éviter les faux positifs)
         score += keywords.some((k) => msg.includes(normalizeText(k))) ? 10 : 0;
 
         if (score > best.score) {
@@ -423,7 +426,6 @@
         }
       }
 
-      // Seuil d’acceptation
       if (best.score >= 50 && best.answer) return { answer: best.answer, id: best.id };
 
       return {
@@ -450,7 +452,6 @@
       return answer;
     };
 
-
     const addMessage = (text, sender) => {
       const msgDiv = document.createElement("div");
       msgDiv.className = "message " + sender;
@@ -476,11 +477,10 @@
     };
 
     const renderQuickActions = () => {
-      const actions = quickActions;
       const container = document.createElement("div");
       container.className = "chat-quick-actions";
 
-      for (const label of actions) {
+      for (const label of quickActions) {
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className = "chat-quick-action";
@@ -491,7 +491,6 @@
         container.appendChild(btn);
       }
 
-      // Dernier message d'accueil/ fallback (ne pas spam si déjà présent)
       const existing = chatMessages.querySelector(".chat-quick-actions");
       if (existing) existing.remove();
       chatMessages.appendChild(container);
@@ -516,23 +515,18 @@
 
         addMessage(answer, "bot");
 
-        // Si fallback (ou erreur), proposer des actions
         if (answer && (answer.includes("Pouvez-vous préciser") || answer.includes("Réessayez"))) {
           renderQuickActions();
         }
       }, delay);
     };
 
-
-    // Message d'accueil contextuel + quick actions
     addMessage(generateContextualIntro(), "bot");
     renderQuickActions();
-
 
     const setChatOpen = (open) => {
       chatWindow.classList.toggle("active", open);
       chatBubble.setAttribute("aria-expanded", String(open));
-      // Accessibilité : quand on ferme, on retire le focus du panel
       if (!open) chatWindow.blur();
     };
 
@@ -544,7 +538,6 @@
     chatClose.addEventListener("click", () => {
       setChatOpen(false);
     });
-
 
     chatSend.addEventListener("click", () => {
       const text = chatInput.value.trim();
@@ -562,18 +555,18 @@
     });
   }
 
-    // ========== 8. FOND DE PARTICULES ANIMÉ (canvas) ==========
-    const prefersReducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const canvas = document.getElementById("particles-canvas");
+  // ========== 8. FOND DE PARTICULES ANIMÉ (canvas) ==========
+  const prefersReducedMotion =
+    window.matchMedia &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const canvas = document.getElementById("particles-canvas");
 
   if (canvas) {
     const ctx = canvas.getContext("2d");
     let rafId = 0;
 
     const particles = [];
-    // Sur mobile / faible perf / reduced-motion, on baisse la charge.
     const maxParticles = prefersReducedMotion ? 30 : 80;
-
 
     const resize = () => {
       canvas.width = window.innerWidth;
@@ -582,10 +575,8 @@
 
     class Particle {
       constructor() {
-        // En cas de réduction des animations, on garde une particule “plus calme”.
         this.reset();
       }
-
       reset() {
         this.x = Math.random() * canvas.width;
         this.y = Math.random() * canvas.height;
@@ -596,12 +587,7 @@
       update() {
         this.x += this.speedX;
         this.y += this.speedY;
-        if (
-          this.x < 0 ||
-          this.x > canvas.width ||
-          this.y < 0 ||
-          this.y > canvas.height
-        ) {
+        if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
           this.reset();
         }
       }
@@ -614,17 +600,12 @@
     }
 
     resize();
-
     for (let i = 0; i < maxParticles; i++) {
       particles.push(new Particle());
     }
 
     const animate = () => {
-      if (prefersReducedMotion) {
-        // On évite l’animation en boucle lourde si l’utilisateur le demande.
-        return;
-      }
-
+      if (prefersReducedMotion) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       for (const p of particles) {
         p.update();
@@ -637,11 +618,7 @@
       animate();
     }
 
-
     window.addEventListener("resize", resize);
-
-    // cleanup volontaire non nécessaire sur page static, mais on évite de laisser du state inutile
-    // (aucun stop requis pour GitHub Pages)
     void rafId;
   }
 })();
