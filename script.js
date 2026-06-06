@@ -1,6 +1,7 @@
 (function () {
   "use strict";
 
+
   // ========== 0. INITIALISATION AOS (animations au scroll) ==========
   if (window.AOS && typeof window.AOS.init === "function") {
     window.AOS.init({
@@ -497,8 +498,17 @@
       chatMessages.scrollTop = chatMessages.scrollHeight;
     };
 
+    let chatBusy = false;
+
     const processUserMessage = (text) => {
-      addMessage(text, "user");
+      if (chatBusy) return;
+
+      const trimmed = (text || "").toString().trim();
+      if (!trimmed) return;
+
+      chatBusy = true;
+      addMessage(trimmed, "user");
+
       const typing = showTypingIndicator();
       const delay = 650 + Math.random() * 650;
 
@@ -507,7 +517,7 @@
 
         let answer;
         try {
-          answer = findAnswer(text);
+          answer = findAnswer(trimmed);
         } catch (err) {
           console.error("Chatbot error:", err);
           answer = "Désolé, je n’arrive pas à traiter votre demande. Réessayez ou choisissez une option ci-dessous.";
@@ -518,6 +528,8 @@
         if (answer && (answer.includes("Pouvez-vous préciser") || answer.includes("Réessayez"))) {
           renderQuickActions();
         }
+
+        chatBusy = false;
       }, delay);
     };
 
@@ -604,8 +616,10 @@
       particles.push(new Particle());
     }
 
+    let paused = false;
+
     const animate = () => {
-      if (prefersReducedMotion) return;
+      if (prefersReducedMotion || paused) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       for (const p of particles) {
         p.update();
@@ -618,6 +632,14 @@
       animate();
     }
 
+    const onVisibilityChange = () => {
+      paused = document.hidden;
+      if (!paused && !prefersReducedMotion) {
+        animate();
+      }
+    };
+
+    document.addEventListener("visibilitychange", onVisibilityChange);
     window.addEventListener("resize", resize);
     void rafId;
   }
