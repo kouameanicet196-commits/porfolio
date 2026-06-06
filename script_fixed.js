@@ -12,15 +12,24 @@
     });
   }
 
-  // ========== 1. PRELOADER ==========
-  window.addEventListener("load", function () {
+  // ========== 1. PRELOADER (fail-safe) ==========
+  (() => {
     const loader = document.getElementById("loader");
     if (!loader) return;
-    loader.classList.add("hidden");
-    setTimeout(() => {
-      if (loader) loader.style.display = "none";
-    }, 1000);
-  });
+
+    const hideLoader = () => {
+      loader.classList.add("hidden");
+      setTimeout(() => {
+        if (loader) loader.style.display = "none";
+      }, 300);
+    };
+
+    // Masquer dès que le DOM est prêt
+    document.addEventListener("DOMContentLoaded", hideLoader, { once: true });
+
+    // Fallback : si une ressource ne termine jamais de charger (GitHub Pages / réseau)
+    setTimeout(hideLoader, 4000);
+  })();
 
   // ========== 2. CURSEUR PERSONNALISÉ ==========
   const cursor = document.getElementById("cursor");
